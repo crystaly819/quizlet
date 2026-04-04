@@ -224,3 +224,14 @@ NotebookLM이 JSON을 출력하면 다음 순서로 넘기면 됩니다.
 - 정답 페이지를 따로 명시하면 answer-key 매핑이 훨씬 안정적입니다.
 - OCR이 불안정한 PDF는 먼저 구조 파악 프롬프트를 실행한 뒤 범위를 더 잘게 나눕니다.
 - NotebookLM이 설명을 길게 붙이면 다시 `JSON만 출력`을 강하게 요청합니다.
+
+## Codex에게 프롬프트 생성을 요청할 때
+
+NotebookLM에 바로 요청하기 전에, 먼저 Codex에게 PDF 구조와 원하는 문제 양식을 설명하고 맞춤형 프롬프트를 생성하게 할 수도 있습니다.
+
+- 별도 안내: [README_NOTEBOOKLM_REQUEST_TEMPLATE.md](README_NOTEBOOKLM_REQUEST_TEMPLATE.md)
+- 추천 흐름:
+  1. PDF 특징과 원하는 JSON 양식을 Codex에게 설명합니다.
+  2. Codex가 그 PDF에 맞는 구조 파악, 추출, 검증 프롬프트를 만들어줍니다.
+  3. 그 프롬프트를 NotebookLM에 넣어 JSON을 추출합니다.
+  4. 결과 JSON을 다시 Codex에게 넘겨 앱 반영을 요청합니다.
