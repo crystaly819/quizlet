@@ -44,6 +44,13 @@ python3 -m app.ingest pdfs --rebuild
 
 `--rebuild` 는 기존 `data/app.db`와 파싱 캐시를 기준에 맞춰 다시 만드는 방식입니다. 파서를 수정했거나 PDF가 추가/교체됐으면 `--rebuild` 사용을 권장합니다.
 
+## NotebookLM 가이드
+
+규칙 기반 파싱으로 커버하기 어려운 PDF는 NotebookLM으로 구조화 JSON을 먼저 뽑아오는 워크플로우를 사용할 수 있습니다.
+
+- 별도 안내: [README_NOTEBOOKLM.md](README_NOTEBOOKLM.md)
+- 포함 내용: 구조 파악 프롬프트, JSON 추출 프롬프트, 검증 프롬프트, JSON 스키마, 복붙용 요청 예시
+
 ## 폴더 구조
 
 - [`app/`](/Users/byungjun/workspace/Quizlet/app): FastAPI 서버, 파서, 템플릿, 정적 파일
