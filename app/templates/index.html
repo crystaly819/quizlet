@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}문제집 목록 | PDF Quizlet{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">Local Study App</p>
+    <h1>PDF에서 문제를 뽑아 바로 푸는 개인용 문제집</h1>
+    <p class="lede">
+      각 PDF를 deck으로 가져오고, 랜덤 풀이와 오답노트, 저신뢰 문항 검수까지 한 곳에서 처리합니다.
+    </p>
+  </div>
+  <div class="summary-card">
+    <div class="summary-label">열린 검수 건수</div>
+    <div class="summary-value">{{ open_issue_total }}</div>
+    <a class="button ghost" href="/review">검수 화면 열기</a>
+  </div>
+</section>
+
+<section class="card-grid">
+  {% for row in decks %}
+  <article class="deck-card">
+    <h2>{{ row.deck.title }}</h2>
+    <p class="deck-meta">{{ row.deck.page_count }} pages · {{ row.deck.question_count }} questions</p>
+    <p class="deck-meta">열린 검수 {{ row.open_issues }}건</p>
+    <div class="deck-actions">
+      <a class="button" href="/decks/{{ row.deck.id }}/study?mode=all">전체 랜덤</a>
+      <a class="button ghost" href="/decks/{{ row.deck.id }}/study?mode=wrong">오답노트</a>
+    </div>
+  </article>
+  {% else %}
+  <article class="empty-card">
+    <h2>문제집이 아직 없습니다.</h2>
+    <p>`pdfs/` 폴더에 PDF를 넣고 서버를 다시 시작하거나 `python3 -m app.ingest pdfs/ --rebuild`를 실행하세요.</p>
+  </article>
+  {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}검수 | PDF Quizlet{% endblock %}
+
+{% block content %}
+<section class="review-header">
+  <div>
+    <p class="eyebrow">Review Queue</p>
+    <h1>저신뢰 문항 검수</h1>
+    <p class="lede">자동으로 확신하지 못한 문항만 여기로 모입니다. 수정 후 승인하면 학습 화면에 바로 반영됩니다. 자동 승인 문항은 학습 화면의 `이 문항 수정` 버튼으로 직접 열 수 있습니다.</p>
+  </div>
+</section>
+
+<section class="review-list">
+  {% for row in issues %}
+  <article class="review-card">
+    <div class="review-meta">
+      <strong>{{ row.deck.title }}</strong>
+      <span>문항 {{ row.question.number }} · p.{{ row.question.page_number }}</span>
+      <span class="issue-chip">{{ row.issue.reason }}</span>
+      <a class="button ghost compact" href="{{ row.review_url }}">단독 편집</a>
+    </div>
+
+    <div class="review-grid">
+      <form class="review-form" method="post" action="/api/review/{{ row.issue.id }}">
+        <input type="hidden" name="question_kind" value="{{ row.question.question_kind }}" />
+        <label>
+          질문
+          <textarea name="stem" rows="4" required>{{ row.question.stem }}</textarea>
+        </label>
+
+        {% if row.question.question_kind == "multiple_choice" or row.question.question_kind == "multi_select" %}
+        {% for index, choice in row.choices %}
+        <label>
+          선택지 {{ index }}
+          <textarea name="choice_{{ index }}" rows="2">{{ choice }}</textarea>
+        </label>
+        {% endfor %}
+
+        {% if row.question.question_kind == "multiple_choice" %}
+        {% for index in range(row.choices|length + 1, 6) %}
+        <label>
+          선택지 {{ index }}
+          <textarea name="choice_{{ index }}" rows="2"></textarea>
+        </label>
+        {% endfor %}
+        {% endif %}
+
+        {% if row.question.question_kind == "multiple_choice" %}
+        <label>
+          정답 번호
+          <input
+            type="number"
+            name="correct_index"
+            min="1"
+            max="5"
+            value="{{ row.question.correct_index or 1 }}"
+            required
+          />
+        </label>
+        {% else %}
+        <label>
+          정답
+          <textarea name="answer_text" rows="3" required>{{ row.question.answer_text or "" }}</textarea>
+        </label>
+        <p class="helper-text">다중 정답은 `②, ⑥, ⑩`처럼 저장하세요.</p>
+        {% endif %}
+        {% else %}
+        <label>
+          정답
+          <textarea name="answer_text" rows="4" required>{{ row.question.answer_text or "" }}</textarea>
+        </label>
+        {% if row.question.question_kind == "true_false" %}
+        <p class="helper-text">정답은 O 또는 X로 저장하세요.</p>
+        {% endif %}
+        {% endif %}
+
+        <label>
+          해설
+          <textarea name="explanation_text" rows="5">{{ row.question.explanation_text or "" }}</textarea>
+        </label>
+        <div class="inline-actions review-actions">
+          <button class="button" type="submit">수정 후 승인</button>
+          <button class="button danger" type="submit" form="discard-issue-{{ row.issue.id }}">문항 버리기</button>
+        </div>
+      </form>
+      <form id="discard-issue-{{ row.issue.id }}" method="post" action="/api/review/{{ row.issue.id }}/discard"></form>
+
+      <div class="review-preview">
+        {% if row.preview_url %}
+        <img src="{{ row.preview_url }}" alt="원문 crop" class="preview-image" />
+        {% endif %}
+        <details>
+          <summary>파서 디버그 정보</summary>
+          <pre>{{ row.payload_pretty }}</pre>
+        </details>
+      </div>
+    </div>
+  </article>
+  {% else %}
+  <article class="empty-card">
+    <h2>열린 검수 건이 없습니다.</h2>
+    <p>자동 승인된 문제만으로 학습을 시작할 수 있습니다.</p>
+  </article>
+  {% endfor %}
+</section>
+{% endblock %}

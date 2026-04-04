@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}PDF Quizlet{% endblock %}</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="shell">
+        <a class="brand" href="/">PDF Quizlet</a>
+        <nav class="site-nav">
+          <a href="/">문제집</a>
+          <a href="/review">검수</a>
+        </nav>
+      </div>
+    </header>
+    <main class="shell">{% block content %}{% endblock %}</main>
+  </body>
+</html>

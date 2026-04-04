@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}문항 수정 | PDF Quizlet{% endblock %}
+
+{% block content %}
+<section class="review-header">
+  <div>
+    <p class="eyebrow">Manual Review</p>
+    <h1>문항 수동 검수</h1>
+    <p class="lede">자동 승인 여부와 상관없이 이 문항의 정답, 선택지, 해설을 직접 수정할 수 있습니다.</p>
+  </div>
+</section>
+
+{% if saved %}
+<article class="status-card">
+  <strong>저장되었습니다.</strong>
+  <p>이 문항은 수동 검수됨으로 표시되며 학습 화면에도 바로 반영됩니다.</p>
+</article>
+{% endif %}
+
+<section class="review-list">
+  <article class="review-card">
+    <div class="review-meta">
+      <strong>{{ entry.deck.title }}</strong>
+      <span>문항 {{ entry.question.number }} · p.{{ entry.question.page_number }}</span>
+      {% if entry.issue %}
+      <span class="issue-chip">{{ entry.issue.reason }}</span>
+      {% endif %}
+      {% if entry.question.manual_reviewed %}
+      <span class="manual-chip">수동 검수됨</span>
+      {% endif %}
+      <a class="button ghost compact" href="/review">검수 목록</a>
+    </div>
+
+    <div class="review-grid">
+      <form class="review-form" method="post" action="/api/questions/{{ entry.question.id }}/review">
+        <input type="hidden" name="question_kind" value="{{ entry.question.question_kind }}" />
+        <label>
+          질문
+          <textarea name="stem" rows="4" required>{{ entry.question.stem }}</textarea>
+        </label>
+
+        {% if entry.question.question_kind == "multiple_choice" or entry.question.question_kind == "multi_select" %}
+        {% for index, choice in entry.choices %}
+        <label>
+          선택지 {{ index }}
+          <textarea name="choice_{{ index }}" rows="2">{{ choice }}</textarea>
+        </label>
+        {% endfor %}
+
+        {% if entry.question.question_kind == "multiple_choice" %}
+        {% for index in range(entry.choices|length + 1, 6) %}
+        <label>
+          선택지 {{ index }}
+          <textarea name="choice_{{ index }}" rows="2"></textarea>
+        </label>
+        {% endfor %}
+        <label>
+          정답 번호
+          <input
+            type="number"
+            name="correct_index"
+            min="1"
+            max="5"
+            value="{{ entry.question.correct_index or 1 }}"
+            required
+          />
+        </label>
+        {% else %}
+        <label>
+          정답
+          <textarea name="answer_text" rows="3" required>{{ entry.question.answer_text or "" }}</textarea>
+        </label>
+        <p class="helper-text">다중 정답은 `②, ⑥, ⑩`처럼 저장하세요.</p>
+        {% endif %}
+        {% else %}
+        <label>
+          정답
+          <textarea name="answer_text" rows="4" required>{{ entry.question.answer_text or "" }}</textarea>
+        </label>
+        {% if entry.question.question_kind == "true_false" %}
+        <p class="helper-text">정답은 O 또는 X로 저장하세요.</p>
+        {% endif %}
+        {% endif %}
+
+        <label>
+          해설
+          <textarea name="explanation_text" rows="5">{{ entry.question.explanation_text or "" }}</textarea>
+        </label>
+        <div class="inline-actions review-actions">
+          <button class="button" type="submit">수정 저장</button>
+          {% if entry.issue %}
+          <button class="button danger" type="submit" form="discard-issue-{{ entry.issue.id }}">문항 버리기</button>
+          {% endif %}
+        </div>
+      </form>
+      {% if entry.issue %}
+      <form id="discard-issue-{{ entry.issue.id }}" method="post" action="/api/review/{{ entry.issue.id }}/discard"></form>
+      {% endif %}
+
+      <div class="review-preview">
+        {% if entry.question.manual_reviewed %}
+        <p class="manual-note">원문과 현재 정답이 다를 수 있습니다. 이 문항은 수동 검수 후 저장되었습니다.</p>
+        {% endif %}
+        {% if entry.preview_url %}
+        <img src="{{ entry.preview_url }}" alt="원문 crop" class="preview-image" />
+        {% endif %}
+        {% if entry.payload_pretty %}
+        <details>
+          <summary>파서 디버그 정보</summary>
+          <pre>{{ entry.payload_pretty }}</pre>
+        </details>
+        {% endif %}
+      </div>
+    </div>
+  </article>
+</section>
+{% endblock %}

@@ -1,0 +1,11 @@
+fastapi
+httpx
+jinja2
+kiwipiepy
+Pillow
+PyMuPDF
+pydantic
+python-multipart
+pytest
+SQLAlchemy
+uvicorn[standard]

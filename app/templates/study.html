@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}{{ deck.title }} | PDF Quizlet{% endblock %}
+
+{% block content %}
+<section class="study-header">
+  <div>
+    <p class="eyebrow">Study Deck</p>
+    <h1>{{ deck.title }}</h1>
+    <p class="deck-meta">{{ approved_count }} approved · {{ seen_count }} seen · {{ wrong_count }} wrong-note</p>
+  </div>
+  <div class="mode-switcher">
+    <a class="mode-link {% if mode == 'all' %}active{% endif %}" href="/decks/{{ deck.id }}/study?mode=all">전체 랜덤</a>
+    <a class="mode-link {% if mode == 'unseen' %}active{% endif %}" href="/decks/{{ deck.id }}/study?mode=unseen">미풀이</a>
+    <a class="mode-link {% if mode == 'wrong' %}active{% endif %}" href="/decks/{{ deck.id }}/study?mode=wrong">오답노트</a>
+  </div>
+</section>
+
+<section
+  class="study-layout"
+  data-study-app
+  data-deck-id="{{ deck.id }}"
+  data-mode="{{ mode }}"
+>
+  <article class="question-panel">
+    <div class="question-head">
+      <span id="question-number">문항을 불러오는 중...</span>
+      <span id="question-page"></span>
+    </div>
+    <pre id="question-stem" class="question-stem"></pre>
+    <div id="choice-list" class="choice-list"></div>
+    <form id="short-answer-form" class="answer-form hidden">
+      <input
+        id="short-answer-input"
+        class="text-input"
+        type="text"
+        placeholder="정답을 입력하세요"
+        autocomplete="off"
+      />
+      <button id="short-answer-submit" class="button" type="submit">정답 확인</button>
+    </form>
+    <div id="selection-controls" class="inline-actions hidden">
+      <button id="multi-select-submit" class="button" type="button">선택한 답 제출</button>
+    </div>
+    <div id="answer-feedback" class="answer-feedback hidden"></div>
+    <div id="flashcard-controls" class="choice-list hidden"></div>
+    <div id="explanation-actions" class="inline-actions hidden">
+      <button id="explanation-toggle" class="button ghost" type="button">해설 보기</button>
+    </div>
+    <pre id="explanation-text" class="explanation-box hidden"></pre>
+    <div class="inline-actions">
+      <button id="next-button" class="button hidden" type="button">다음 문제</button>
+      <a id="review-link" class="button ghost compact hidden" href="/review" target="_blank" rel="noopener noreferrer">이 문항 수정</a>
+    </div>
+    <div id="empty-state" class="empty-state hidden"></div>
+  </article>
+
+  <aside class="preview-panel">
+    <h2>원문 미리보기</h2>
+    <div class="preview-toolbar">
+      <button id="preview-toggle" class="button ghost" type="button" disabled>원문 보기</button>
+    </div>
+    <p id="manual-review-badge" class="manual-chip hidden">수동 검수됨</p>
+    <p id="manual-review-note" class="manual-note hidden">이 문항은 사람이 정답 또는 문항 정보를 직접 수정했습니다.</p>
+    <img id="question-preview" alt="문항 원문 미리보기" class="preview-image hidden" />
+    <p id="preview-empty" class="deck-meta">원문은 기본으로 숨겨져 있습니다.</p>
+  </aside>
+</section>
+
+<script src="/static/study.js"></script>
+{% endblock %}
