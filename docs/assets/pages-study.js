@@ -1,6 +1,18 @@
 const studyRoot = document.querySelector("[data-static-study-app]");
 
 if (studyRoot) {
+  function resolveSiteAsset(relativePath) {
+    const currentUrl = new URL(window.location.href);
+    let pathname = currentUrl.pathname;
+    if (!pathname.endsWith("/")) {
+      const lastSegment = pathname.split("/").pop() || "";
+      pathname = lastSegment.includes(".")
+        ? pathname.slice(0, pathname.lastIndexOf("/") + 1)
+        : `${pathname}/`;
+    }
+    return new URL(relativePath, `${currentUrl.origin}${pathname}`).toString();
+  }
+
   const params = new URLSearchParams(window.location.search);
   const deckSlug = params.get("deck") || "";
   const mode = ["all", "unseen", "wrong"].includes(params.get("mode")) ? params.get("mode") : "all";
@@ -395,7 +407,7 @@ if (studyRoot) {
   multiSelectSubmitEl.addEventListener("click", submitMultiSelect);
   nextButton.addEventListener("click", loadNextQuestion);
 
-  fetch("./data/app-data.json")
+  fetch(resolveSiteAsset("data/app-data.json"))
     .then((response) => {
       if (!response.ok) {
         throw new Error("정적 문제 데이터를 불러오지 못했습니다.");
