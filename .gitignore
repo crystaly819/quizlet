@@ -3,5 +3,7 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 data/
+!docs/data/
+!docs/data/app-data.json
 *.pyc
 .omx/
