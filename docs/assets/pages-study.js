@@ -39,6 +39,10 @@ if (studyRoot) {
   const explanationTextEl = document.getElementById("explanation-text");
   const nextButton = document.getElementById("next-button");
   const emptyStateEl = document.getElementById("empty-state");
+  const previewEl = document.getElementById("question-preview");
+  const previewToggleEl = document.getElementById("preview-toggle");
+  const previewAutoToggleEl = document.getElementById("preview-auto-toggle");
+  const previewEmptyEl = document.getElementById("preview-empty");
   const manualReviewBadgeEl = document.getElementById("manual-review-badge");
   const manualReviewNoteEl = document.getElementById("manual-review-note");
 
@@ -155,6 +159,59 @@ if (studyRoot) {
     manualReviewNoteEl.classList.add("hidden");
   }
 
+  function resetPreview() {
+    previewEl.classList.add("hidden");
+    previewEl.removeAttribute("src");
+    previewToggleEl.disabled = true;
+    previewToggleEl.textContent = "원문 보기";
+    previewEmptyEl.textContent = "원문은 기본으로 숨겨져 있습니다.";
+    previewEmptyEl.classList.remove("hidden");
+  }
+
+  function updatePreviewAutoToggleLabel() {
+    previewAutoToggleEl.textContent = `전체 자동 보기: ${previewAutoVisible ? "켬" : "끔"}`;
+  }
+
+  function showPreview() {
+    if (!previewEl.getAttribute("src")) {
+      return;
+    }
+    previewEl.classList.remove("hidden");
+    previewEmptyEl.classList.add("hidden");
+    previewToggleEl.textContent = "원문 숨기기";
+  }
+
+  function hidePreview() {
+    previewEl.classList.add("hidden");
+    previewEmptyEl.textContent = "원문은 기본으로 숨겨져 있습니다.";
+    previewEmptyEl.classList.remove("hidden");
+    previewToggleEl.textContent = "원문 보기";
+  }
+
+  function applyPreviewVisibility() {
+    if (!previewEl.getAttribute("src")) {
+      hidePreview();
+      return;
+    }
+    if (previewAutoVisible) {
+      showPreview();
+      return;
+    }
+    hidePreview();
+  }
+
+  function configurePreview(question) {
+    resetPreview();
+    if (!question.preview_src) {
+      previewToggleEl.textContent = "원문 없음";
+      previewEmptyEl.textContent = "이 문항은 정적 export에 포함된 원문 미리보기가 없습니다.";
+      return;
+    }
+    previewEl.src = resolveSiteAsset(question.preview_src);
+    previewToggleEl.disabled = false;
+    applyPreviewVisibility();
+  }
+
   function setEmptyState(message) {
     currentQuestion = null;
     numberEl.textContent = "문항 없음";
@@ -163,6 +220,7 @@ if (studyRoot) {
     resetAnswerInputs();
     resetFeedback();
     resetReviewIndicators();
+    resetPreview();
     emptyStateEl.textContent = message;
     emptyStateEl.classList.remove("hidden");
   }
@@ -234,6 +292,7 @@ if (studyRoot) {
     numberEl.textContent = `${question.number}번`;
     pageEl.textContent = `p.${question.page_number}`;
     stemEl.textContent = question.stem;
+    configurePreview(question);
     if (question.manual_reviewed) {
       manualReviewBadgeEl.classList.remove("hidden");
       manualReviewNoteEl.classList.remove("hidden");
@@ -403,9 +462,35 @@ if (studyRoot) {
     explanationToggleEl.textContent = isHidden ? "해설 숨기기" : "해설 보기";
   });
 
+  previewToggleEl.addEventListener("click", () => {
+    if (previewToggleEl.disabled || !previewEl.getAttribute("src")) {
+      return;
+    }
+
+    const isHidden = previewEl.classList.contains("hidden");
+    if (isHidden) {
+      showPreview();
+      return;
+    }
+
+    hidePreview();
+  });
+
+  previewAutoToggleEl.addEventListener("click", () => {
+    previewAutoVisible = !previewAutoVisible;
+    try {
+      window.localStorage.setItem(previewAutoStorageKey, previewAutoVisible ? "1" : "0");
+    } catch (error) {
+      // Ignore storage failures and keep the in-memory toggle working.
+    }
+    updatePreviewAutoToggleLabel();
+    applyPreviewVisibility();
+  });
+
   shortAnswerFormEl.addEventListener("submit", submitShortAnswer);
   multiSelectSubmitEl.addEventListener("click", submitMultiSelect);
   nextButton.addEventListener("click", loadNextQuestion);
+  updatePreviewAutoToggleLabel();
 
   fetch(resolveSiteAsset("data/app-data.json"))
     .then((response) => {

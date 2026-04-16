@@ -7,12 +7,13 @@ import shutil
 from datetime import datetime, UTC
 from pathlib import Path
 
+import fitz
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 from .config import Settings
 from .database import configure_database, init_db, session_scope
-from .main import build_multi_select_correct_text
+from .main import build_multi_select_correct_text, resolve_source_pdf_path
 from .models import Deck, Question
 from .parser import compact_text, extract_choice_indices_from_text
 
@@ -50,15 +51,72 @@ def build_correct_text(question: Question) -> str | None:
     return None
 
 
-def build_question_payload(deck: Deck, question: Question) -> dict:
+def render_preview_image(
+    settings: Settings,
+    previews_dir: Path,
+    deck: Deck,
+    question: Question,
+    *,
+    question_key: str,
+    documents: dict[str, fitz.Document],
+) -> str | None:
+    if not question.source_bbox:
+        return None
+
+    try:
+        bbox = json.loads(question.source_bbox)
+    except json.JSONDecodeError:
+        return None
+
+    if not isinstance(bbox, list) or len(bbox) != 4:
+        return None
+
+    pdf_path = resolve_source_pdf_path(settings, deck.source_pdf)
+    if not pdf_path.exists():
+        return None
+
+    path_key = str(pdf_path.resolve())
+    document = documents.get(path_key)
+    if document is None:
+        document = fitz.open(pdf_path)
+        documents[path_key] = document
+
+    if question.page_number < 1 or question.page_number > document.page_count:
+        return None
+
+    page = document[question.page_number - 1]
+    pixmap = page.get_pixmap(matrix=fitz.Matrix(2, 2), clip=fitz.Rect(*bbox), alpha=False)
+    preview_name = f"{question_key}.png"
+    preview_path = previews_dir / preview_name
+    preview_path.write_bytes(pixmap.tobytes("png"))
+    return f"./previews/{preview_name}"
+
+
+def build_question_payload(
+    settings: Settings,
+    previews_dir: Path,
+    deck: Deck,
+    question: Question,
+    *,
+    documents: dict[str, fitz.Document],
+) -> dict:
+    question_key = question_storage_key(deck, question)
     correct_indices = (
         extract_choice_indices_from_text(question.answer_text)
         if question.question_kind == "multi_select"
         else None
     )
+    preview_src = render_preview_image(
+        settings,
+        previews_dir,
+        deck,
+        question,
+        question_key=question_key,
+        documents=documents,
+    )
     return {
         "id": question.id,
-        "key": question_storage_key(deck, question),
+        "key": question_key,
         "number": question.number,
         "page_number": question.page_number,
         "question_kind": question.question_kind,
@@ -73,16 +131,18 @@ def build_question_payload(deck: Deck, question: Question) -> dict:
         "correct_indices": correct_indices,
         "correct_text": build_correct_text(question),
         "manual_reviewed": question.manual_reviewed,
-        # Server-generated preview crops are not available on GitHub Pages.
-        "preview_src": None,
+        "preview_src": preview_src,
     }
 
 
 def export_github_pages_site(settings: Settings, output_dir: Path) -> Path:
     assets_dir = output_dir / "assets"
     data_dir = output_dir / "data"
+    previews_dir = output_dir / "previews"
     assets_dir.mkdir(parents=True, exist_ok=True)
     data_dir.mkdir(parents=True, exist_ok=True)
+    shutil.rmtree(previews_dir, ignore_errors=True)
+    previews_dir.mkdir(parents=True, exist_ok=True)
 
     shutil.copyfile(settings.static_dir / "styles.css", assets_dir / "styles.css")
     shutil.copyfile(settings.static_dir / "timer.js", assets_dir / "timer.js")
@@ -100,22 +160,33 @@ def export_github_pages_site(settings: Settings, output_dir: Path) -> Path:
         "site_title": "수정 예시 문제집",
         "decks": [],
     }
-    for deck in decks:
-        approved_questions = [question for question in deck.questions if question.is_approved]
-        payload["decks"].append(
-            {
-                "id": deck.id,
-                "slug": deck.slug,
-                "title": deck.title,
-                "page_count": deck.page_count,
-                "question_count": len(approved_questions),
-                "approved_count": len(approved_questions),
-                "questions": [
-                    build_question_payload(deck, question)
-                    for question in approved_questions
-                ],
-            }
-        )
+    documents: dict[str, fitz.Document] = {}
+    try:
+        for deck in decks:
+            approved_questions = [question for question in deck.questions if question.is_approved]
+            payload["decks"].append(
+                {
+                    "id": deck.id,
+                    "slug": deck.slug,
+                    "title": deck.title,
+                    "page_count": deck.page_count,
+                    "question_count": len(approved_questions),
+                    "approved_count": len(approved_questions),
+                    "questions": [
+                        build_question_payload(
+                            settings,
+                            previews_dir,
+                            deck,
+                            question,
+                            documents=documents,
+                        )
+                        for question in approved_questions
+                    ],
+                }
+            )
+    finally:
+        for document in documents.values():
+            document.close()
 
     output_path = data_dir / "app-data.json"
     output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")

@@ -95,8 +95,11 @@ Codex나 로컬 터미널을 켜두지 않고 항상 열리게 하려면 Render 
 
 - `/review` 검수 화면
 - 서버 DB 동기화
-- 원문 crop API 기반 미리보기
 - 여러 기기 간 학습 기록 동기화
+
+### 미리보기 동작
+
+GitHub Pages 버전도 원문 미리보기를 지원합니다. 다만 서버에서 즉석 crop API를 호출하는 대신, export 시점에 미리 PNG를 만들어 `docs/previews/` 아래에 넣는 방식입니다.
 
 ### export 방법
 

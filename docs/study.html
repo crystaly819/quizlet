@@ -91,12 +91,18 @@
         </article>
 
         <aside class="preview-panel">
-          <h2>정적 버전 안내</h2>
+          <h2>원문 미리보기</h2>
+          <div class="preview-toolbar">
+            <button id="preview-toggle" class="button ghost" type="button" disabled>원문 보기</button>
+            <button id="preview-auto-toggle" class="button ghost compact" type="button">전체 자동 보기: 끔</button>
+          </div>
           <p class="deck-meta pages-note-text">
-            이 버전은 GitHub Pages에서 동작하므로 서버 API가 필요한 원문 crop 미리보기와 문항 수정 기능은 제공되지 않습니다.
+            GitHub Pages용 export 시점에 미리 만든 PNG를 보여줍니다. 검수 저장과 서버 동기화는 여전히 지원되지 않습니다.
           </p>
           <p id="manual-review-badge" class="manual-chip hidden">수동 검수됨</p>
           <p id="manual-review-note" class="manual-note hidden">이 문항은 사람이 정답 또는 문항 정보를 직접 수정했습니다.</p>
+          <img id="question-preview" alt="문항 원문 미리보기" class="preview-image hidden" />
+          <p id="preview-empty" class="deck-meta">원문은 기본으로 숨겨져 있습니다.</p>
           <div class="status-card pages-progress-card">
             <div class="summary-label">이 브라우저 진행 상황</div>
             <div class="summary-value pages-progress-value" data-progress-summary>0 / 0</div>

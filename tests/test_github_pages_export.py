@@ -27,3 +27,5 @@ def test_export_github_pages_site_writes_deck_and_question_data(temp_settings, t
     assert first_question["key"]
     assert first_question["question_kind"]
     assert "correct_text" in first_question
+    assert first_question["preview_src"] is not None
+    assert (tmp_path / "docs" / "previews" / f"{first_question['key']}.png").exists()
