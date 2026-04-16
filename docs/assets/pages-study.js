@@ -14,7 +14,7 @@ if (studyRoot) {
   }
 
   const params = new URLSearchParams(window.location.search);
-  const deckSlug = params.get("deck") || "";
+  let deckSlug = params.get("deck") || "";
   const mode = ["all", "unseen", "wrong"].includes(params.get("mode")) ? params.get("mode") : "all";
   const progressStorageKey = "quizlet-gh-progress-v1";
   const previewAutoStorageKey = "quizlet-preview-auto-visible";
@@ -80,6 +80,14 @@ if (studyRoot) {
 
   function deckStudyLink(slug, currentMode) {
     return `./study.html?deck=${encodeURIComponent(slug)}&mode=${encodeURIComponent(currentMode)}`;
+  }
+
+  function syncStudyUrl(slug, currentMode) {
+    if (!slug) {
+      return;
+    }
+    const nextUrl = deckStudyLink(slug, currentMode);
+    window.history.replaceState({}, "", nextUrl);
   }
 
   function updateModeLinks() {
@@ -500,6 +508,11 @@ if (studyRoot) {
       return response.json();
     })
     .then((data) => {
+      if (!deckSlug && data.decks.length > 0) {
+        deckSlug = data.decks[0].slug;
+        syncStudyUrl(deckSlug, mode);
+      }
+
       currentDeck = data.decks.find((deck) => deck.slug === deckSlug) || null;
       updateModeLinks();
       if (!currentDeck) {
