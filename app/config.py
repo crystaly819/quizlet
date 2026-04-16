@@ -16,6 +16,7 @@ class Settings:
     pdf_dir: Path
     database_url: str
     auto_ingest: bool = True
+    interactive_pdf_select: bool = False
     testing: bool = False
 
     @property
@@ -44,6 +45,7 @@ class Settings:
             f"sqlite:///{(data_dir / 'app.db').as_posix()}",
         )
         auto_ingest = os.getenv("QUIZLET_AUTO_INGEST", "1") != "0"
+        interactive_pdf_select = os.getenv("QUIZLET_SELECT_PDFS", "0") == "1"
         testing = os.getenv("QUIZLET_TESTING", "0") == "1"
         return cls(
             base_dir=base_dir,
@@ -51,5 +53,6 @@ class Settings:
             pdf_dir=pdf_dir,
             database_url=database_url,
             auto_ingest=auto_ingest,
+            interactive_pdf_select=interactive_pdf_select,
             testing=testing,
         )

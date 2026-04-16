@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ deck.title }} | PDF Quizlet{% endblock %}
+{% block title %}{{ deck.title }} | 수정 예시 문제집{% endblock %}
 
 {% block content %}
 <section class="study-header">
@@ -59,6 +59,7 @@
     <h2>원문 미리보기</h2>
     <div class="preview-toolbar">
       <button id="preview-toggle" class="button ghost" type="button" disabled>원문 보기</button>
+      <button id="preview-auto-toggle" class="button ghost compact" type="button">전체 자동 보기: 끔</button>
     </div>
     <p id="manual-review-badge" class="manual-chip hidden">수동 검수됨</p>
     <p id="manual-review-note" class="manual-note hidden">이 문항은 사람이 정답 또는 문항 정보를 직접 수정했습니다.</p>

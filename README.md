@@ -30,6 +30,56 @@ uvicorn app.main:app --reload
 
 브라우저에서 `http://127.0.0.1:8000` 을 열면 됩니다.
 
+다른 기기에서도 열고 싶다면 LAN 모드로 실행하면 됩니다.
+
+```bash
+python3 -m app.ingest pdfs --rebuild
+python3 -m app.serve --reload
+```
+
+터미널에 `다른 기기(같은 와이파이)` 주소가 함께 출력됩니다. 같은 Wi-Fi에 연결된 폰이나 태블릿에서 그 주소를 열면 됩니다.
+
+로컬 전용으로만 열고 싶다면 아래처럼 실행합니다.
+
+```bash
+python3 -m app.serve --reload --local-only
+```
+
+같은 와이파이가 아니어도 열 수 있는 공개 링크가 필요하면 아래처럼 실행합니다.
+
+```bash
+python3 -m app.serve --share
+```
+
+터미널에 `공개 링크(어디서든 접속)` 주소가 뜨면 그 링크를 그대로 아이폰, 아이패드, 또는 다른 네트워크의 기기에서 Safari로 열면 됩니다. 링크는 서버가 켜져 있는 동안만 유지됩니다.
+
+## Render 배포
+
+Codex나 로컬 터미널을 켜두지 않고 항상 열리게 하려면 Render 웹 서비스로 배포하면 됩니다.
+
+이 저장소에는 Render용 설정 파일 [`render.yaml`](/Users/crystal/Documents/quizlet/render.yaml) 이 포함되어 있습니다.
+
+### 배포 절차
+
+1. 이 저장소를 GitHub에 푸시합니다.
+2. Render에서 `New +` → `Blueprint` 를 선택하고 이 저장소를 연결합니다.
+3. `render.yaml` 내용을 확인한 뒤 배포를 생성합니다.
+4. 첫 배포가 끝나면 Render가 발급한 `onrender.com` 주소로 접속합니다.
+
+### 현재 설정
+
+- 시작 명령은 `python -m app.render_boot` 입니다.
+- 첫 배포에서 `data/` 디스크가 비어 있으면 `pdfs/` 의 PDF를 자동 ingest 한 뒤 서버를 시작합니다.
+- 이후 재배포에서는 기존 SQLite DB와 캐시를 유지하고, 데이터가 이미 있으면 자동 ingest 를 건너뜁니다.
+- 영구 데이터는 `/opt/render/project/src/data` 에 마운트된 persistent disk 에 저장됩니다.
+
+### PDF나 파서를 바꿨을 때
+
+배포 후에 PDF 파일을 교체했거나 파싱 로직을 바꿨다면, Render 환경 변수 `QUIZLET_RENDER_FORCE_REBUILD=1` 로 한 번 배포해서 DB를 다시 만들 수 있습니다. 반영이 끝나면 다시 `0` 으로 돌려두는 편이 안전합니다.
+
+주의:
+이 재빌드는 기존 학습 기록, 오답 기록, 수동 검수 내용도 함께 다시 만들어질 수 있습니다.
+
 ## 새 PDF 추가하는 법
 
 1. 새 PDF를 [`pdfs/`](/Users/byungjun/workspace/Quizlet/pdfs) 안에 넣습니다.

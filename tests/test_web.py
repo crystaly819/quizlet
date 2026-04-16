@@ -67,10 +67,24 @@ def test_web_flow_supports_study_and_review(temp_settings) -> None:
     index_response = client.get("/")
     assert index_response.status_code == 200
     assert "sample" in index_response.text
+    assert "90분 집중 타이머" in index_response.text
+    assert "90:00" in index_response.text
+    assert "소리 끔" in index_response.text
+    assert "비 오는 소리" in index_response.text
+    assert "숲 소리" in index_response.text
+
+    timer_response = client.get("/timer")
+    assert timer_response.status_code == 200
+    assert "90분 공부, 15분 휴식" in timer_response.text
+    assert "다음 단계로" in timer_response.text
+    assert "백색소음" in timer_response.text
+    assert "비 오는 소리" in timer_response.text
+    assert "시냇물" in timer_response.text
 
     study_response = client.get("/decks/1/study?mode=all")
     assert study_response.status_code == 200
     assert "원문은 기본으로 숨겨져 있습니다." in study_response.text
+    assert "90:00" in study_response.text
 
     next_response = client.get("/api/decks/1/next?mode=all")
     payload = next_response.json()["question"]
@@ -138,6 +152,27 @@ def test_web_flow_supports_study_and_review(temp_settings) -> None:
     assert "단독 편집" in review_response.text
     assert "문항 버리기" in review_response.text
 
+    deck_questions_response = client.get("/decks/1/questions")
+    assert deck_questions_response.status_code == 200
+    assert "전체 문항을 페이지 순서대로 보면서 바로 수정" in deck_questions_response.text
+    assert "단독 편집" in deck_questions_response.text
+    assert "새 문항 추가" in deck_questions_response.text
+
+    add_question_response = client.post(
+        "/api/decks/1/questions",
+        data={
+            "question_kind": "short_answer",
+            "number": "",
+            "page_number": 7,
+            "stem": "새로 추가한 문항은 어디에서 보이나?",
+            "answer_text": "문항 관리 화면",
+            "explanation_text": "사용자가 직접 추가한 문제입니다.",
+        },
+        follow_redirects=False,
+    )
+    assert add_question_response.status_code == 303
+    assert "/decks/1/questions?saved=" in add_question_response.headers["location"]
+
     manual_review_page = client.get(f"/review/questions/{true_false_question.id}")
     assert manual_review_page.status_code == 200
     assert "문항 수동 검수" in manual_review_page.text
@@ -149,16 +184,22 @@ def test_web_flow_supports_study_and_review(temp_settings) -> None:
             "question_kind": "true_false",
             "answer_text": "X",
             "explanation_text": "수동으로 정답을 바로잡았습니다.",
+            "redirect_to": "__deck_questions__",
         },
         follow_redirects=False,
     )
     assert manual_update_response.status_code == 303
+    assert manual_update_response.headers["location"] == (
+        f"/decks/1/questions?saved={true_false_question.id}#question-{true_false_question.id}"
+    )
 
     discard_response = client.post(
         f"/api/review/{discard_issue.id}/discard",
+        data={"redirect_to": "/decks/1/questions#question-901"},
         follow_redirects=False,
     )
     assert discard_response.status_code == 303
+    assert discard_response.headers["location"] == "/decks/1/questions#question-901"
 
     resolve_response = client.post(
         f"/api/review/{issue.id}",
@@ -183,6 +224,9 @@ def test_web_flow_supports_study_and_review(temp_settings) -> None:
         discarded_issue = session.get(ParseIssue, discard_issue.id)
         discarded_question = session.get(Question, discard_issue_question.id)
         manually_reviewed_question = session.get(Question, true_false_question.id)
+        created_question = session.execute(
+            select(Question).where(Question.stem == "새로 추가한 문항은 어디에서 보이나?")
+        ).scalar_one()
         assert updated_question is not None
         assert updated_question.is_approved is True
         assert updated_question.correct_index == 3
@@ -198,6 +242,10 @@ def test_web_flow_supports_study_and_review(temp_settings) -> None:
         assert manually_reviewed_question is not None
         assert manually_reviewed_question.answer_text == "X"
         assert manually_reviewed_question.manual_reviewed is True
+        assert created_question.page_number == 7
+        assert created_question.answer_text == "문항 관리 화면"
+        assert created_question.is_approved is True
+        assert created_question.manual_reviewed is True
 
         reviewed_payload = question_to_payload(manually_reviewed_question)
         assert reviewed_payload["manual_reviewed"] is True

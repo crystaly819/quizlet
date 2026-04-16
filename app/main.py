@@ -31,6 +31,10 @@ def normalize_answer_text(value: str | None) -> str:
 
 
 def resolve_source_pdf_path(settings: Settings, source_pdf: str) -> Path:
+    if "::" in source_pdf:
+        source_pdf = source_pdf.split("::", 1)[0]
+    if "#" in source_pdf:
+        source_pdf = source_pdf.split("#", 1)[0]
     path = Path(source_pdf)
     if path.is_absolute():
         return path
@@ -38,11 +42,24 @@ def resolve_source_pdf_path(settings: Settings, source_pdf: str) -> Path:
 
 
 def preview_url_for_question(question: Question) -> str | None:
-    return f"/api/questions/{question.id}/preview.png" if question.source_bbox else None
+    if not question.source_bbox:
+        return None
+    try:
+        bbox = json.loads(question.source_bbox)
+    except json.JSONDecodeError:
+        return None
+    return f"/api/questions/{question.id}/preview.png" if isinstance(bbox, list) and len(bbox) == 4 else None
 
 
 def review_url_for_question(question: Question) -> str:
     return f"/review/questions/{question.id}"
+
+
+def deck_questions_url(deck_id: int, *, saved_question_id: int | None = None) -> str:
+    url = f"/decks/{deck_id}/questions"
+    if saved_question_id is not None:
+        return f"{url}?saved={saved_question_id}#question-{saved_question_id}"
+    return url
 
 
 def question_to_payload(question: Question) -> dict:
@@ -88,6 +105,33 @@ def build_review_entry(question: Question, deck: Deck, issue: ParseIssue | None 
         "payload_pretty": payload_pretty,
         "review_url": review_url_for_question(question),
     }
+
+
+def collect_choices_from_form(form) -> list[str]:
+    choice_pairs: list[tuple[int, str]] = []
+    for key, value in form.items():
+        if not key.startswith("choice_"):
+            continue
+        try:
+            index = int(key.split("_", 1)[1])
+        except ValueError:
+            continue
+        choice_pairs.append((index, str(value).strip()))
+    return [choice for _, choice in sorted(choice_pairs) if choice]
+
+
+def next_question_number(session, deck_id: int) -> int:
+    current_max = session.execute(
+        select(func.max(Question.number)).where(Question.deck_id == deck_id)
+    ).scalar_one()
+    return (current_max or 0) + 1
+
+
+def next_page_number(session, deck_id: int) -> int:
+    current_max = session.execute(
+        select(func.max(Question.page_number)).where(Question.deck_id == deck_id)
+    ).scalar_one()
+    return current_max or 1
 
 
 def apply_question_review(
@@ -158,7 +202,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     configure_database(settings.database_url)
     init_db()
 
-    app = FastAPI(title="PDF Quizlet")
+    app = FastAPI(title="수정 예시 문제집")
     app.state.settings = settings
     app.state.templates = Jinja2Templates(directory=str(settings.template_dir))
     app.mount("/static", StaticFiles(directory=str(settings.static_dir)), name="static")
@@ -200,6 +244,17 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             },
         )
 
+    @app.get("/timer", response_class=HTMLResponse)
+    def timer_page(request: Request) -> HTMLResponse:
+        return app.state.templates.TemplateResponse(
+            request,
+            "timer.html",
+            {
+                "focus_minutes": 90,
+                "break_minutes": 15,
+            },
+        )
+
     @app.get("/decks/{deck_id}/study", response_class=HTMLResponse)
     def study_page(request: Request, deck_id: int, mode: str = "all") -> HTMLResponse:
         if mode not in {"all", "unseen", "wrong"}:
@@ -238,6 +293,35 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             },
         )
 
+    @app.get("/decks/{deck_id}/questions", response_class=HTMLResponse)
+    def deck_questions_page(request: Request, deck_id: int, saved: int = 0) -> HTMLResponse:
+        with session_scope() as session:
+            deck = session.get(Deck, deck_id)
+            if deck is None:
+                raise HTTPException(status_code=404, detail="Deck not found.")
+
+            questions = session.execute(
+                select(Question)
+                .where(Question.deck_id == deck_id)
+                .order_by(Question.page_number, Question.number, Question.id)
+            ).scalars().all()
+
+            entries = [build_review_entry(question, deck, question.parse_issue) for question in questions]
+            suggested_number = next_question_number(session, deck_id)
+            suggested_page_number = next_page_number(session, deck_id)
+
+        return app.state.templates.TemplateResponse(
+            request,
+            "deck_questions.html",
+            {
+                "deck": deck,
+                "entries": entries,
+                "saved_question_id": saved if saved else None,
+                "suggested_number": suggested_number,
+                "suggested_page_number": suggested_page_number,
+            },
+        )
+
     @app.get("/api/decks/{deck_id}/next")
     def next_question(deck_id: int, mode: str = "all") -> dict:
         if mode not in {"all", "unseen", "wrong"}:
@@ -247,6 +331,61 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if question is None:
             return {"question": None}
         return {"question": question_to_payload(question)}
+
+    @app.post("/api/decks/{deck_id}/questions")
+    async def create_question(
+        request: Request,
+        deck_id: int,
+        stem: str = Form(...),
+        answer_text: str = Form(""),
+        explanation_text: str = Form(""),
+        question_kind: str = Form("multiple_choice"),
+        correct_index: int = Form(1),
+        page_number: int = Form(...),
+        number: str = Form(""),
+    ) -> RedirectResponse:
+        form = await request.form()
+        choices = collect_choices_from_form(form)
+
+        with session_scope() as session:
+            deck = session.get(Deck, deck_id)
+            if deck is None:
+                raise HTTPException(status_code=404, detail="Deck not found.")
+
+            question_number = int(number) if str(number).strip() else next_question_number(session, deck_id)
+            question = Question(
+                deck_id=deck_id,
+                number=question_number,
+                page_number=page_number,
+                question_kind=question_kind,
+                stem=stem.strip(),
+                confidence=1.0,
+                source_bbox="",
+                crop_path=None,
+                is_approved=True,
+                manual_reviewed=True,
+            )
+            session.add(question)
+            session.flush()
+
+            apply_question_review(
+                question,
+                stem=stem,
+                answer_text=answer_text,
+                explanation_text=explanation_text,
+                question_kind=question_kind,
+                correct_index=correct_index,
+                choices=choices,
+            )
+
+            deck.question_count = session.execute(
+                select(func.count(Question.id)).where(Question.deck_id == deck_id)
+            ).scalar_one()
+
+        return RedirectResponse(
+            url=deck_questions_url(deck_id, saved_question_id=question.id),
+            status_code=303,
+        )
 
     @app.get("/api/questions/{question_id}/preview.png")
     def question_preview(question_id: int) -> Response:
@@ -261,6 +400,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 bbox = json.loads(question.source_bbox)
             except json.JSONDecodeError as exc:
                 raise HTTPException(status_code=400, detail="Invalid source bbox.") from exc
+            if not isinstance(bbox, list) or len(bbox) != 4:
+                raise HTTPException(status_code=404, detail="Preview crop not available.")
             source_pdf = deck.source_pdf
             page_number = question.page_number
 
@@ -439,17 +580,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         correct_index: int = Form(1),
     ) -> RedirectResponse:
         form = await request.form()
-        choice_pairs: list[tuple[int, str]] = []
-        for key, value in form.items():
-            if not key.startswith("choice_"):
-                continue
-            try:
-                index = int(key.split("_", 1)[1])
-            except ValueError:
-                continue
-            choice_pairs.append((index, str(value).strip()))
-        choices = [choice for _, choice in sorted(choice_pairs) if choice]
-        filtered_choices = [choice for choice in choices if choice]
+        filtered_choices = collect_choices_from_form(form)
+        redirect_to = str(form.get("redirect_to") or "/review")
 
         with session_scope() as session:
             issue = session.get(ParseIssue, issue_id)
@@ -467,10 +599,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             )
             issue.status = "resolved"
 
-        return RedirectResponse(url="/review", status_code=303)
+        return RedirectResponse(url=redirect_to, status_code=303)
 
     @app.post("/api/review/{issue_id}/discard")
-    def discard_issue(issue_id: int) -> RedirectResponse:
+    async def discard_issue(request: Request, issue_id: int) -> RedirectResponse:
+        form = await request.form()
+        redirect_to = str(form.get("redirect_to") or "/review")
         with session_scope() as session:
             issue = session.get(ParseIssue, issue_id)
             if issue is None:
@@ -480,7 +614,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             question.manual_reviewed = False
             issue.status = "discarded"
 
-        return RedirectResponse(url="/review", status_code=303)
+        return RedirectResponse(url=redirect_to, status_code=303)
 
     @app.post("/api/questions/{question_id}/review")
     async def review_question(
@@ -493,16 +627,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         correct_index: int = Form(1),
     ) -> RedirectResponse:
         form = await request.form()
-        choice_pairs: list[tuple[int, str]] = []
-        for key, value in form.items():
-            if not key.startswith("choice_"):
-                continue
-            try:
-                index = int(key.split("_", 1)[1])
-            except ValueError:
-                continue
-            choice_pairs.append((index, str(value).strip()))
-        choices = [choice for _, choice in sorted(choice_pairs) if choice]
+        choices = collect_choices_from_form(form)
+        redirect_to = str(form.get("redirect_to") or "")
 
         with session_scope() as session:
             question = session.get(Question, question_id)
@@ -519,8 +645,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             )
             if question.parse_issue is not None:
                 question.parse_issue.status = "resolved"
+            if not redirect_to:
+                redirect_to = f"/review/questions/{question_id}?saved=1"
+            elif redirect_to == "__deck_questions__":
+                redirect_to = deck_questions_url(question.deck_id, saved_question_id=question.id)
 
-        return RedirectResponse(url=f"/review/questions/{question_id}?saved=1", status_code=303)
+        return RedirectResponse(url=redirect_to, status_code=303)
 
     return app
 

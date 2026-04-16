@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: quizlet
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m app.render_boot
+    healthCheckPath: /
+    envVars:
+      - key: QUIZLET_AUTO_INGEST
+        value: "0"
+      - key: QUIZLET_RENDER_FORCE_REBUILD
+        value: "0"
+    disk:
+      name: quizlet-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1

@@ -23,12 +23,20 @@ if (root) {
   const emptyStateEl = document.getElementById("empty-state");
   const previewEl = document.getElementById("question-preview");
   const previewToggleEl = document.getElementById("preview-toggle");
+  const previewAutoToggleEl = document.getElementById("preview-auto-toggle");
   const previewEmptyEl = document.getElementById("preview-empty");
   const manualReviewBadgeEl = document.getElementById("manual-review-badge");
   const manualReviewNoteEl = document.getElementById("manual-review-note");
+  const previewAutoStorageKey = "quizlet-preview-auto-visible";
 
   let currentQuestion = null;
   let selectedMultiIndices = new Set();
+  let previewAutoVisible = false;
+  try {
+    previewAutoVisible = window.localStorage.getItem(previewAutoStorageKey) === "1";
+  } catch (error) {
+    previewAutoVisible = false;
+  }
 
   function resetFeedback() {
     feedbackEl.className = "answer-feedback hidden";
@@ -62,6 +70,38 @@ if (root) {
     previewEmptyEl.classList.remove("hidden");
     manualReviewBadgeEl.classList.add("hidden");
     manualReviewNoteEl.classList.add("hidden");
+  }
+
+  function updatePreviewAutoToggleLabel() {
+    previewAutoToggleEl.textContent = `전체 자동 보기: ${previewAutoVisible ? "켬" : "끔"}`;
+  }
+
+  function showPreview() {
+    if (!previewEl.getAttribute("src")) {
+      return;
+    }
+    previewEl.classList.remove("hidden");
+    previewEmptyEl.classList.add("hidden");
+    previewToggleEl.textContent = "원문 숨기기";
+  }
+
+  function hidePreview() {
+    previewEl.classList.add("hidden");
+    previewEmptyEl.textContent = "원문은 기본으로 숨겨져 있습니다.";
+    previewEmptyEl.classList.remove("hidden");
+    previewToggleEl.textContent = "원문 보기";
+  }
+
+  function applyPreviewVisibility() {
+    if (!previewEl.getAttribute("src")) {
+      hidePreview();
+      return;
+    }
+    if (previewAutoVisible) {
+      showPreview();
+      return;
+    }
+    hidePreview();
   }
 
   function resetReviewLink() {
@@ -105,8 +145,7 @@ if (root) {
 
     previewEl.src = question.crop_url;
     previewToggleEl.disabled = false;
-    previewToggleEl.textContent = "원문 보기";
-    previewEmptyEl.textContent = "원문은 기본으로 숨겨져 있습니다.";
+    applyPreviewVisibility();
     if (question.manual_reviewed) {
       manualReviewBadgeEl.classList.remove("hidden");
       manualReviewNoteEl.classList.remove("hidden");
@@ -384,16 +423,22 @@ if (root) {
 
     const isHidden = previewEl.classList.contains("hidden");
     if (isHidden) {
-      previewEl.classList.remove("hidden");
-      previewEmptyEl.classList.add("hidden");
-      previewToggleEl.textContent = "원문 숨기기";
+      showPreview();
       return;
     }
 
-    previewEl.classList.add("hidden");
-    previewEmptyEl.textContent = "원문은 기본으로 숨겨져 있습니다.";
-    previewEmptyEl.classList.remove("hidden");
-    previewToggleEl.textContent = "원문 보기";
+    hidePreview();
+  });
+
+  previewAutoToggleEl.addEventListener("click", () => {
+    previewAutoVisible = !previewAutoVisible;
+    try {
+      window.localStorage.setItem(previewAutoStorageKey, previewAutoVisible ? "1" : "0");
+    } catch (error) {
+      // Ignore storage failures and keep the in-memory toggle working.
+    }
+    updatePreviewAutoToggleLabel();
+    applyPreviewVisibility();
   });
 
   explanationToggleEl.addEventListener("click", () => {
@@ -405,5 +450,6 @@ if (root) {
   shortAnswerFormEl.addEventListener("submit", submitShortAnswer);
   multiSelectSubmitEl.addEventListener("click", submitMultiSelect);
   nextButton.addEventListener("click", loadNextQuestion);
+  updatePreviewAutoToggleLabel();
   loadNextQuestion();
 }

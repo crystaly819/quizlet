@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}{{ deck.title }} 문항 관리 | 수정 예시 문제집{% endblock %}
+
+{% block content %}
+<section class="review-header">
+  <div>
+    <p class="eyebrow">Deck Questions</p>
+    <h1>{{ deck.title }}</h1>
+    <p class="lede">이 과목의 전체 문항을 페이지 순서대로 보면서 바로 수정할 수 있습니다. 저장하면 이 화면으로 다시 돌아오고 학습 화면에도 즉시 반영됩니다.</p>
+  </div>
+  <div class="summary-card">
+    <div class="summary-label">전체 문항 수</div>
+    <div class="summary-value">{{ deck.question_count }}</div>
+    <a class="button ghost" href="/decks/{{ deck.id }}/study?mode=all">학습 시작</a>
+  </div>
+</section>
+
+{% if saved_question_id %}
+<article class="status-card">
+  <strong>문항 저장 완료</strong>
+  <p>해당 카드 위치로 다시 이동했습니다.</p>
+</article>
+{% endif %}
+
+<section class="review-list">
+  <article class="review-card">
+    <div class="review-meta">
+      <strong>새 문항 추가</strong>
+      <span>과목에 직접 문항을 만들어 넣습니다.</span>
+    </div>
+
+    <div class="review-grid">
+      <form class="review-form" method="post" action="/api/decks/{{ deck.id }}/questions">
+        <label>
+          문항 종류
+          <select name="question_kind">
+            <option value="multiple_choice">객관식</option>
+            <option value="multi_select">복수정답</option>
+            <option value="short_answer">단답형</option>
+            <option value="true_false">O/X</option>
+            <option value="flashcard">플래시카드</option>
+          </select>
+        </label>
+
+        <div class="form-split">
+          <label>
+            문항 번호
+            <input type="number" name="number" min="1" value="{{ suggested_number }}" />
+          </label>
+          <label>
+            페이지 번호
+            <input type="number" name="page_number" min="1" value="{{ suggested_page_number }}" required />
+          </label>
+        </div>
+
+        <label>
+          질문
+          <textarea name="stem" rows="4" required></textarea>
+        </label>
+
+        {% for index in range(1, 6) %}
+        <label>
+          선택지 {{ index }}
+          <textarea name="choice_{{ index }}" rows="2"></textarea>
+        </label>
+        {% endfor %}
+
+        <label>
+          정답 번호
+          <input type="number" name="correct_index" min="1" max="5" value="1" />
+        </label>
+
+        <label>
+          정답 텍스트
+          <textarea name="answer_text" rows="3"></textarea>
+        </label>
+
+        <label>
+          해설
+          <textarea name="explanation_text" rows="4"></textarea>
+        </label>
+
+        <div class="inline-actions review-actions">
+          <button class="button" type="submit">문항 추가</button>
+        </div>
+      </form>
+
+      <div class="review-preview">
+        <p class="manual-note">객관식은 선택지와 정답 번호를 채우세요. 단답형, O/X, 플래시카드는 정답 텍스트를 채우면 됩니다. 복수정답은 선택지와 함께 정답 텍스트를 `②, ④`처럼 저장하세요.</p>
+      </div>
+    </div>
+  </article>
+
+  {% for entry in entries %}
+  <article
+    class="review-card question-editor-card{% if saved_question_id == entry.question.id %} saved-highlight{% endif %}"
+    id="question-{{ entry.question.id }}"
+  >
+    <div class="review-meta">
+      <strong>문항 {{ entry.question.number }}</strong>
+      <span>p.{{ entry.question.page_number }}</span>
+      <span class="issue-chip">{{ entry.question.question_kind }}</span>
+      {% if entry.issue %}
+      <span class="issue-chip">{{ entry.issue.reason }}</span>
+      {% endif %}
+      {% if entry.question.is_approved %}
+      <span class="manual-chip">승인됨</span>
+      {% endif %}
+      {% if entry.question.manual_reviewed %}
+      <span class="manual-chip">수동 검수됨</span>
+      {% endif %}
+      <a class="button ghost compact" href="{{ entry.review_url }}">단독 편집</a>
+    </div>
+
+    <div class="review-grid">
+      <form class="review-form" method="post" action="/api/questions/{{ entry.question.id }}/review">
+        <input type="hidden" name="redirect_to" value="__deck_questions__" />
+        <input type="hidden" name="question_kind" value="{{ entry.question.question_kind }}" />
+        <label>
+          질문
+          <textarea name="stem" rows="4" required>{{ entry.question.stem }}</textarea>
+        </label>
+
+        {% if entry.question.question_kind == "multiple_choice" or entry.question.question_kind == "multi_select" %}
+        {% for index, choice in entry.choices %}
+        <label>
+          선택지 {{ index }}
+          <textarea name="choice_{{ index }}" rows="2">{{ choice }}</textarea>
+        </label>
+        {% endfor %}
+
+        {% if entry.question.question_kind == "multiple_choice" %}
+        {% for index in range(entry.choices|length + 1, 6) %}
+        <label>
+          선택지 {{ index }}
+          <textarea name="choice_{{ index }}" rows="2"></textarea>
+        </label>
+        {% endfor %}
+        <label>
+          정답 번호
+          <input
+            type="number"
+            name="correct_index"
+            min="1"
+            max="5"
+            value="{{ entry.question.correct_index or 1 }}"
+            required
+          />
+        </label>
+        {% else %}
+        <label>
+          정답
+          <textarea name="answer_text" rows="3" required>{{ entry.question.answer_text or "" }}</textarea>
+        </label>
+        <p class="helper-text">다중 정답은 `②, ⑥, ⑩`처럼 저장하세요.</p>
+        {% endif %}
+        {% else %}
+        <label>
+          정답
+          <textarea name="answer_text" rows="4" required>{{ entry.question.answer_text or "" }}</textarea>
+        </label>
+        {% if entry.question.question_kind == "true_false" %}
+        <p class="helper-text">정답은 O 또는 X로 저장하세요.</p>
+        {% endif %}
+        {% endif %}
+
+        <label>
+          해설
+          <textarea name="explanation_text" rows="5">{{ entry.question.explanation_text or "" }}</textarea>
+        </label>
+        <div class="inline-actions review-actions">
+          <button class="button" type="submit">저장</button>
+          {% if entry.issue %}
+          <button class="button danger" type="submit" form="discard-issue-{{ entry.issue.id }}">문항 버리기</button>
+          {% endif %}
+        </div>
+      </form>
+
+      {% if entry.issue %}
+      <form id="discard-issue-{{ entry.issue.id }}" method="post" action="/api/review/{{ entry.issue.id }}/discard">
+        <input type="hidden" name="redirect_to" value="/decks/{{ deck.id }}/questions#question-{{ entry.question.id }}" />
+      </form>
+      {% endif %}
+
+      <div class="review-preview">
+        {% if entry.preview_url %}
+        <img src="{{ entry.preview_url }}" alt="원문 crop" class="preview-image" />
+        {% endif %}
+        {% if entry.payload_pretty %}
+        <details>
+          <summary>파서 디버그 정보</summary>
+          <pre>{{ entry.payload_pretty }}</pre>
+        </details>
+        {% endif %}
+      </div>
+    </div>
+  </article>
+  {% else %}
+  <article class="empty-card">
+    <h2>이 과목에는 아직 문항이 없습니다.</h2>
+    <p>PDF를 다시 가져오거나 ingest 결과를 확인해 주세요.</p>
+  </article>
+  {% endfor %}
+</section>
+{% endblock %}

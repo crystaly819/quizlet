@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}문항 수정 | PDF Quizlet{% endblock %}
+{% block title %}문항 수정 | 수정 예시 문제집{% endblock %}
 
 {% block content %}
 <section class="review-header">
@@ -30,10 +30,12 @@
       <span class="manual-chip">수동 검수됨</span>
       {% endif %}
       <a class="button ghost compact" href="/review">검수 목록</a>
+      <a class="button ghost compact" href="/decks/{{ entry.deck.id }}/questions">과목 전체 문항</a>
     </div>
 
     <div class="review-grid">
       <form class="review-form" method="post" action="/api/questions/{{ entry.question.id }}/review">
+        <input type="hidden" name="redirect_to" value="/review/questions/{{ entry.question.id }}?saved=1" />
         <input type="hidden" name="question_kind" value="{{ entry.question.question_kind }}" />
         <label>
           질문

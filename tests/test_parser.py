@@ -1,12 +1,20 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from app.parser import (
     ChoiceData,
     LineData,
     PageSnapshot,
+    ParsedQuestion,
+    apply_answer_footer_to_pending_questions,
+    build_choice_question,
+    derive_document_title,
     filter_page_lines,
     is_answer_highlight,
+    is_microbiology_answer_key_page,
     match_highlights,
+    parse_microbiology_answer_key_entry,
     parse_flashcards_from_lines,
     parse_questions_from_lines,
 )
@@ -126,6 +134,29 @@ def test_match_highlights_returns_none_for_multiple_choices() -> None:
     assert unique_matches == [1, 2]
 
 
+def test_build_choice_question_uses_multi_select_for_multiple_answers() -> None:
+    choices = [
+        ChoiceData(index=1, label="①", label_bbox=(0, 0, 10, 10), lines=["alpha"], bboxes=[(0, 0, 10, 10)]),
+        ChoiceData(index=2, label="②", label_bbox=(0, 10, 10, 20), lines=["beta"], bboxes=[(0, 10, 10, 20)]),
+        ChoiceData(index=3, label="③", label_bbox=(0, 20, 10, 30), lines=["gamma"], bboxes=[(0, 20, 10, 30)]),
+    ]
+
+    question = build_choice_question(
+        number=1,
+        page_number=1,
+        stem="복수정답 문제",
+        choices=choices,
+        bbox=(0, 0, 10, 30),
+        answer_indices=[1, 3],
+        payload={"number": 1, "page_number": 1, "stem": "복수정답 문제"},
+    )
+
+    assert question.question_kind == "multi_select"
+    assert question.answer_text == "①, ③"
+    assert question.correct_index is None
+    assert question.approved is True
+
+
 def test_answer_highlight_supports_yellow_and_pink_tones() -> None:
     assert is_answer_highlight((1.0, 1.0, 0.0)) is True
     assert is_answer_highlight((0.949, 0.604, 0.776)) is True
@@ -181,3 +212,112 @@ def test_parse_flashcards_restores_spacing_for_unspaced_korean_prompt_and_answer
     assert len(questions) == 1
     assert questions[0].stem == "카카오지의 융점이 저하되었을 때 경화제로 사용되는 것은?"
     assert questions[0].answer_text == "세틸에스터왁스, 밀납"
+
+
+def test_derive_document_title_cleans_known_real_pdf_names() -> None:
+    assert derive_document_title(Path("06. 생약학 필수 문제집_워터마크.pdf")) == "생약학"
+    assert derive_document_title(Path("15. 약제학 약동학 개념확인 문제집_워터마크.pdf")) == "약제/약동학"
+    assert derive_document_title(Path("33. 예방약학 문제집_워터마크.pdf")) == "예방약학"
+    assert derive_document_title(Path("[보안][답치기] 대한민국 약전 품질 파트.pdf")) == "약전 품질"
+    assert derive_document_title(Path("[절대보안][문제집] 약품미생물학 연습 답치기.pdf")) == "미생물학"
+    assert derive_document_title(Path("[보안][과제] 약물구조카드 매일보기.pdf")) == "약물구조"
+    assert derive_document_title(Path("[답] 생화학 분과회 문제집 답치기 (1).pdf")) == "생화학"
+
+
+def test_parse_microbiology_answer_key_entry_handles_ocr_spacing() -> None:
+    assert parse_microbiology_answer_key_entry("O1. F") == (1, "F")
+    assert parse_microbiology_answer_key_entry("1 0. T") == (10, "T")
+    assert parse_microbiology_answer_key_entry("44: ①, ③") == (44, "①, ③")
+
+
+def test_is_microbiology_answer_key_page_detects_real_answer_section_shape() -> None:
+    assert (
+        is_microbiology_answer_key_page(
+            [
+                "해답 123",
+                "Chapter 1",
+                "O1. F",
+                "02. T",
+                "03. F",
+                "04. T",
+                "05. F",
+                "06. T",
+                "07. T",
+                "08. T",
+            ]
+        )
+        is True
+    )
+    assert (
+        is_microbiology_answer_key_page(
+            [
+                "약품미생물학 요약 및 연습",
+                "[1-12] 다음 설명 중 옳은 것에 T, 틀린 것에 F를 표시하시오.",
+                "1 Robe㏏ Koch가 탄저균을 발견하고 백신을 개발하였다.",
+                "2 히포크라테스는 질병의 원인으로 사기설을 주장하였다.",
+                "3 Walter Reed는 황열이 모기에 의해 매개됨을 규명하였다.",
+            ]
+        )
+        is False
+    )
+
+
+def test_apply_answer_footer_to_pending_questions_uses_most_recent_matching_number() -> None:
+    older_question = ParsedQuestion(
+        number=1,
+        page_number=2,
+        question_kind="multiple_choice",
+        stem="older",
+        answer_text=None,
+        explanation_text=None,
+        choices=[],
+        bbox=(0, 0, 10, 10),
+        correct_index=None,
+        confidence=0.1,
+        approved=False,
+        issue_reason="missing_answer",
+        payload={},
+    )
+    newer_question = ParsedQuestion(
+        number=1,
+        page_number=5,
+        question_kind="multiple_choice",
+        stem="newer",
+        answer_text=None,
+        explanation_text=None,
+        choices=[],
+        bbox=(0, 0, 10, 10),
+        correct_index=None,
+        confidence=0.1,
+        approved=False,
+        issue_reason="missing_answer",
+        payload={},
+    )
+    sibling_question = ParsedQuestion(
+        number=2,
+        page_number=5,
+        question_kind="multiple_choice",
+        stem="sibling",
+        answer_text=None,
+        explanation_text=None,
+        choices=[],
+        bbox=(0, 0, 10, 10),
+        correct_index=None,
+        confidence=0.1,
+        approved=False,
+        issue_reason="missing_answer",
+        payload={},
+    )
+
+    remaining = apply_answer_footer_to_pending_questions(
+        [older_question, newer_question, sibling_question],
+        {
+            1: ("③", None),
+            2: ("①", None),
+        },
+    )
+
+    assert older_question.answer_text is None
+    assert newer_question.answer_text == "③"
+    assert sibling_question.answer_text == "①"
+    assert remaining == [older_question]
