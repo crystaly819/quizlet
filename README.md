@@ -80,6 +80,52 @@ Codex나 로컬 터미널을 켜두지 않고 항상 열리게 하려면 Render 
 주의:
 이 재빌드는 기존 학습 기록, 오답 기록, 수동 검수 내용도 함께 다시 만들어질 수 있습니다.
 
+## GitHub Pages 배포
+
+서버 없이 무료로 열고 싶다면 GitHub Pages용 정적 버전도 사용할 수 있습니다.
+
+### 포함 기능
+
+- deck 목록 보기
+- 전체 랜덤 / 미풀이 / 오답노트 풀이
+- 브라우저 localStorage 기반 학습 기록 저장
+- 집중 타이머
+
+### 제외 기능
+
+- `/review` 검수 화면
+- 서버 DB 동기화
+- 원문 crop API 기반 미리보기
+- 여러 기기 간 학습 기록 동기화
+
+### export 방법
+
+기존 ingest가 끝난 상태에서 아래 명령을 실행하면 `docs/` 아래에 GitHub Pages용 정적 데이터가 생성됩니다.
+
+```bash
+python3 -m app.export_github_pages
+```
+
+이 명령은 아래를 갱신합니다.
+
+- `docs/data/app-data.json`
+- `docs/assets/styles.css`
+- `docs/assets/timer.js`
+- `docs/.nojekyll`
+
+`docs/index.html`, `docs/study.html`, `docs/timer.html` 은 정적 앱 셸로 유지됩니다.
+
+### GitHub Pages 설정
+
+1. GitHub 저장소 `Settings`
+2. `Pages`
+3. `Build and deployment` 에서 `Deploy from a branch`
+4. Branch 는 `main`
+5. Folder 는 `/docs`
+6. 저장 후 배포 완료까지 잠시 대기
+
+배포 주소는 보통 `https://<username>.github.io/<repo>/` 형태입니다.
+
 ## 새 PDF 추가하는 법
 
 1. 새 PDF를 [`pdfs/`](/Users/byungjun/workspace/Quizlet/pdfs) 안에 넣습니다.

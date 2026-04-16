@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>문제집 목록 | 수정 예시 문제집</title>
+    <link rel="stylesheet" href="./assets/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="shell">
+        <a class="brand" href="./">수정 예시 문제집</a>
+        <div class="header-tools">
+          <nav class="site-nav">
+            <a href="./">문제집</a>
+            <a href="./timer.html">집중 타이머</a>
+            <a href="https://github.com/crystaly819/quizlet" target="_blank" rel="noreferrer">GitHub</a>
+          </nav>
+          <div class="header-controls">
+            <div class="header-ambient">
+              <span class="sr-only">백색소음</span>
+              <select class="header-ambient-select" data-ambient-mode aria-label="백색소음 선택">
+                <option value="none">소리 끔</option>
+                <option value="rain">비 오는 소리</option>
+                <option value="library">도서관 소음</option>
+                <option value="forest">숲 소리</option>
+                <option value="stream">시냇물</option>
+                <option value="waves">파도 소리</option>
+                <option value="white">화이트 노이즈</option>
+                <option value="brown">브라운 노이즈</option>
+              </select>
+              <button class="button ghost compact" type="button" data-ambient-toggle>재생</button>
+            </div>
+            <div class="header-timer" data-focus-timer data-focus-minutes="90" data-break-minutes="15">
+              <a class="header-timer-link" href="./timer.html">
+                <span class="header-timer-label" data-timer-phase-short>집중</span>
+                <strong class="header-timer-time" data-timer-display>90:00</strong>
+                <span class="header-timer-meta" data-timer-status>대기 중</span>
+              </a>
+              <button class="button ghost compact" type="button" data-timer-start-pause>시작</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">GitHub Pages Edition</p>
+          <h1>예시 문제집</h1>
+          <p class="lede">
+            FastAPI 없이도 바로 열 수 있는 정적 버전입니다. 학습 기록은 이 브라우저에만 저장되고, 검수 화면과 서버 저장 기능은 제외됩니다.
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="./timer.html">90분 집중 타이머</a>
+            <a class="button ghost" href="https://github.com/crystaly819/quizlet" target="_blank" rel="noreferrer">저장소 보기</a>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">저장 방식</div>
+          <div class="summary-value">로컬</div>
+          <p class="deck-meta">학습 기록과 오답노트는 현재 브라우저의 localStorage에 저장됩니다.</p>
+        </div>
+      </section>
+
+      <section class="status-card pages-note">
+        <h2>GitHub Pages 제한</h2>
+        <p>문항 수정, 서버 동기화, 원문 crop API는 동작하지 않습니다. 대신 문제 풀이, 미풀이 필터, 오답노트, 타이머는 그대로 사용할 수 있습니다.</p>
+      </section>
+
+      <section class="card-grid" data-deck-grid>
+        <article class="empty-card">
+          <h2>문제집을 불러오는 중...</h2>
+          <p>정적 export 데이터가 준비되면 여기에 deck 목록이 표시됩니다.</p>
+        </article>
+      </section>
+    </main>
+    <script src="./assets/timer.js"></script>
+    <script src="./assets/pages-index.js"></script>
+  </body>
+  </html>

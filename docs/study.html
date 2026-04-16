@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>문제 풀이 | 수정 예시 문제집</title>
+    <link rel="stylesheet" href="./assets/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="shell">
+        <a class="brand" href="./">수정 예시 문제집</a>
+        <div class="header-tools">
+          <nav class="site-nav">
+            <a href="./">문제집</a>
+            <a href="./timer.html">집중 타이머</a>
+            <a href="https://github.com/crystaly819/quizlet" target="_blank" rel="noreferrer">GitHub</a>
+          </nav>
+          <div class="header-controls">
+            <div class="header-ambient">
+              <span class="sr-only">백색소음</span>
+              <select class="header-ambient-select" data-ambient-mode aria-label="백색소음 선택">
+                <option value="none">소리 끔</option>
+                <option value="rain">비 오는 소리</option>
+                <option value="library">도서관 소음</option>
+                <option value="forest">숲 소리</option>
+                <option value="stream">시냇물</option>
+                <option value="waves">파도 소리</option>
+                <option value="white">화이트 노이즈</option>
+                <option value="brown">브라운 노이즈</option>
+              </select>
+              <button class="button ghost compact" type="button" data-ambient-toggle>재생</button>
+            </div>
+            <div class="header-timer" data-focus-timer data-focus-minutes="90" data-break-minutes="15">
+              <a class="header-timer-link" href="./timer.html">
+                <span class="header-timer-label" data-timer-phase-short>집중</span>
+                <strong class="header-timer-time" data-timer-display>90:00</strong>
+                <span class="header-timer-meta" data-timer-status>대기 중</span>
+              </a>
+              <button class="button ghost compact" type="button" data-timer-start-pause>시작</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="shell">
+      <section class="study-header">
+        <div>
+          <p class="eyebrow">Static Study</p>
+          <h1 data-study-title>문제집을 불러오는 중...</h1>
+          <p class="deck-meta" data-study-meta>GitHub Pages 버전</p>
+        </div>
+        <div class="mode-switcher">
+          <a class="mode-link" data-mode-link="all" href="./study.html?mode=all">전체 랜덤</a>
+          <a class="mode-link" data-mode-link="unseen" href="./study.html?mode=unseen">미풀이</a>
+          <a class="mode-link" data-mode-link="wrong" href="./study.html?mode=wrong">오답노트</a>
+        </div>
+      </section>
+
+      <section class="study-layout" data-static-study-app>
+        <article class="question-panel">
+          <div class="question-head">
+            <span id="question-number">문항을 불러오는 중...</span>
+            <span id="question-page"></span>
+          </div>
+          <pre id="question-stem" class="question-stem"></pre>
+          <div id="choice-list" class="choice-list"></div>
+          <form id="short-answer-form" class="answer-form hidden">
+            <input
+              id="short-answer-input"
+              class="text-input"
+              type="text"
+              placeholder="정답을 입력하세요"
+              autocomplete="off"
+            />
+            <button id="short-answer-submit" class="button" type="submit">정답 확인</button>
+          </form>
+          <div id="selection-controls" class="inline-actions hidden">
+            <button id="multi-select-submit" class="button" type="button">선택한 답 제출</button>
+          </div>
+          <div id="answer-feedback" class="answer-feedback hidden"></div>
+          <div id="flashcard-controls" class="choice-list hidden"></div>
+          <div id="explanation-actions" class="inline-actions hidden">
+            <button id="explanation-toggle" class="button ghost" type="button">해설 보기</button>
+          </div>
+          <pre id="explanation-text" class="explanation-box hidden"></pre>
+          <div class="inline-actions">
+            <button id="next-button" class="button hidden" type="button">다음 문제</button>
+          </div>
+          <div id="empty-state" class="empty-state hidden"></div>
+        </article>
+
+        <aside class="preview-panel">
+          <h2>정적 버전 안내</h2>
+          <p class="deck-meta pages-note-text">
+            이 버전은 GitHub Pages에서 동작하므로 서버 API가 필요한 원문 crop 미리보기와 문항 수정 기능은 제공되지 않습니다.
+          </p>
+          <p id="manual-review-badge" class="manual-chip hidden">수동 검수됨</p>
+          <p id="manual-review-note" class="manual-note hidden">이 문항은 사람이 정답 또는 문항 정보를 직접 수정했습니다.</p>
+          <div class="status-card pages-progress-card">
+            <div class="summary-label">이 브라우저 진행 상황</div>
+            <div class="summary-value pages-progress-value" data-progress-summary>0 / 0</div>
+            <p class="deck-meta" data-progress-detail>풀이 기록이 localStorage에 저장됩니다.</p>
+          </div>
+        </aside>
+      </section>
+    </main>
+    <script src="./assets/timer.js"></script>
+    <script src="./assets/pages-study.js"></script>
+  </body>
+  </html>
