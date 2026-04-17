@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-17T07:22:03.409864+00:00",
+  "generated_at": "2026-04-17T13:59:52.074633+00:00",
   "site_title": "수정 예시 문제집",
   "decks": [
     {
@@ -132749,7 +132749,7 @@
           "page_number": 50,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "L-dopa",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -132766,13 +132766,13 @@
             },
             {
               "index": 4,
-              "text": "o-chlorobenzaldehyde"
+              "text": "Baclofen"
             }
           ],
           "correct_index": 3,
           "correct_indices": null,
           "correct_text": "L-dopa",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/82ec503a3a4d0220.png"
         },
         {
@@ -132782,7 +132782,7 @@
           "page_number": 52,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Carbidopa",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -132791,7 +132791,7 @@
             },
             {
               "index": 2,
-              "text": "o-chlorobenzaldehyde"
+              "text": "Baclofen"
             },
             {
               "index": 3,
@@ -132805,7 +132805,7 @@
           "correct_index": 4,
           "correct_indices": null,
           "correct_text": "Carbidopa",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/6a30be173f4c7bb4.png"
         },
         {
@@ -132815,7 +132815,7 @@
           "page_number": 54,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Biperiden",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -132824,7 +132824,7 @@
             },
             {
               "index": 2,
-              "text": "o-chlorobenzaldehyde"
+              "text": "Baclofen"
             },
             {
               "index": 3,
@@ -132838,7 +132838,7 @@
           "correct_index": 1,
           "correct_indices": null,
           "correct_text": "Biperiden",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/7813a14073784e14.png"
         },
         {
@@ -132848,7 +132848,7 @@
           "page_number": 56,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "o-chlorobenzaldehyde",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -132857,7 +132857,7 @@
             },
             {
               "index": 2,
-              "text": "o-chlorobenzaldehyde"
+              "text": "Baclofen"
             },
             {
               "index": 3,
@@ -132870,8 +132870,8 @@
           ],
           "correct_index": 2,
           "correct_indices": null,
-          "correct_text": "o-chlorobenzaldehyde",
-          "manual_reviewed": false,
+          "correct_text": "Baclofen",
+          "manual_reviewed": true,
           "preview_src": "./previews/421405492e4d82b9.png"
         },
         {
@@ -133013,7 +133013,7 @@
           "page_number": 66,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Epinephrine",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -133030,13 +133030,13 @@
             },
             {
               "index": 4,
-              "text": "henyloxypropanolamine"
+              "text": "Carvedilol"
             }
           ],
           "correct_index": 3,
           "correct_indices": null,
           "correct_text": "Epinephrine",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/bfc56c595aa39a81.png"
         },
         {
@@ -133046,7 +133046,7 @@
           "page_number": 68,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Salbutamol",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -133055,7 +133055,7 @@
             },
             {
               "index": 2,
-              "text": "henyloxypropanolamine"
+              "text": "Carvedilol"
             },
             {
               "index": 3,
@@ -133069,7 +133069,7 @@
           "correct_index": 4,
           "correct_indices": null,
           "correct_text": "Salbutamol",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/5f7b9f457e41fe82.png"
         },
         {
@@ -133079,7 +133079,7 @@
           "page_number": 70,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Alfuzosin",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -133088,7 +133088,7 @@
             },
             {
               "index": 2,
-              "text": "henyloxypropanolamine"
+              "text": "Propranolol"
             },
             {
               "index": 3,
@@ -133096,13 +133096,13 @@
             },
             {
               "index": 4,
-              "text": "henyloxypropanolamineA"
+              "text": "Carvedilol"
             }
           ],
           "correct_index": 1,
           "correct_indices": null,
           "correct_text": "Alfuzosin",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/f028365f5b56828f.png"
         },
         {
@@ -133112,7 +133112,7 @@
           "page_number": 72,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "henyloxypropanolamine",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -133121,11 +133121,11 @@
             },
             {
               "index": 2,
-              "text": "henyloxypropanolamine"
+              "text": "Propranolol"
             },
             {
               "index": 3,
-              "text": "henyloxypropanolamineA"
+              "text": "Ondansetron"
             },
             {
               "index": 4,
@@ -133134,8 +133134,8 @@
           ],
           "correct_index": 2,
           "correct_indices": null,
-          "correct_text": "henyloxypropanolamine",
-          "manual_reviewed": false,
+          "correct_text": "Propranolol",
+          "manual_reviewed": true,
           "preview_src": "./previews/2cd3c0a46c16683c.png"
         },
         {
@@ -133145,12 +133145,12 @@
           "page_number": 74,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Atenolol",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
               "index": 1,
-              "text": "henyloxypropanolamineA"
+              "text": "Propranolol"
             },
             {
               "index": 2,
@@ -133168,7 +133168,7 @@
           "correct_index": 3,
           "correct_indices": null,
           "correct_text": "Atenolol",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/3ad4956ab5894bc2.png"
         },
         {
@@ -133178,7 +133178,7 @@
           "page_number": 76,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "henyloxypropanolamineA",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -133195,13 +133195,13 @@
             },
             {
               "index": 4,
-              "text": "henyloxypropanolamineA"
+              "text": "Carvedilol"
             }
           ],
           "correct_index": 4,
           "correct_indices": null,
-          "correct_text": "henyloxypropanolamineA",
-          "manual_reviewed": false,
+          "correct_text": "Carvedilol",
+          "manual_reviewed": true,
           "preview_src": "./previews/f764dc2c243582ff.png"
         },
         {
@@ -133508,7 +133508,7 @@
           "page_number": 96,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Formoterol",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -133525,13 +133525,13 @@
             },
             {
               "index": 4,
-              "text": "FCiIVUUecivi fii"
+              "text": "Fenoterol HBr"
             }
           ],
           "correct_index": 2,
           "correct_indices": null,
           "correct_text": "Formoterol",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/f0755d518c8361d9.png"
         },
         {
@@ -133541,7 +133541,7 @@
           "page_number": 98,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Ambroxol",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -133550,7 +133550,7 @@
             },
             {
               "index": 2,
-              "text": "FCiIVUUecivi fii"
+              "text": "Fenoterol HBr"
             },
             {
               "index": 3,
@@ -133564,7 +133564,7 @@
           "correct_index": 3,
           "correct_indices": null,
           "correct_text": "Ambroxol",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/bbd71f11e595660f.png"
         },
         {
@@ -133574,12 +133574,12 @@
           "page_number": 100,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Montelukast sodium",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
               "index": 1,
-              "text": "FCiIVUUecivi fii"
+              "text": "Fenoterol HBr"
             },
             {
               "index": 2,
@@ -133597,7 +133597,7 @@
           "correct_index": 4,
           "correct_indices": null,
           "correct_text": "Montelukast sodium",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/e51ec82cdd7871b0.png"
         },
         {
@@ -133607,12 +133607,12 @@
           "page_number": 102,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "FCiIVUUecivi fii",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
               "index": 1,
-              "text": "FCiIVUUecivi fii"
+              "text": "Fenoterol HBr"
             },
             {
               "index": 2,
@@ -133629,8 +133629,8 @@
           ],
           "correct_index": 1,
           "correct_indices": null,
-          "correct_text": "FCiIVUUecivi fii",
-          "manual_reviewed": false,
+          "correct_text": "Fenoterol HBr",
+          "manual_reviewed": true,
           "preview_src": "./previews/27a3a2d9ea186f14.png"
         },
         {
@@ -133772,7 +133772,7 @@
           "page_number": 112,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Doxapram",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -133789,13 +133789,13 @@
             },
             {
               "index": 4,
-              "text": "lydrochlorothiazide(HCTZ"
+              "text": "Hydrochlorothiazide"
             }
           ],
           "correct_index": 2,
           "correct_indices": null,
           "correct_text": "Doxapram",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/4995ff55abc4e8b2.png"
         },
         {
@@ -133805,7 +133805,7 @@
           "page_number": 114,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Enalapril",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -133814,7 +133814,7 @@
             },
             {
               "index": 2,
-              "text": "lydrochlorothiazide(HCTZ"
+              "text": "Hydrochlorothiazide"
             },
             {
               "index": 3,
@@ -133828,7 +133828,7 @@
           "correct_index": 3,
           "correct_indices": null,
           "correct_text": "Enalapril",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/b5df159c5ee52f38.png"
         },
         {
@@ -133838,12 +133838,12 @@
           "page_number": 116,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Ramipril",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
               "index": 1,
-              "text": "lydrochlorothiazide(HCTZ"
+              "text": "Hydrochlorothiazide"
             },
             {
               "index": 2,
@@ -133861,7 +133861,7 @@
           "correct_index": 4,
           "correct_indices": null,
           "correct_text": "Ramipril",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/7220d4ba9d727a6a.png"
         },
         {
@@ -133871,12 +133871,12 @@
           "page_number": 118,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "lydrochlorothiazide(HCTZ",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
               "index": 1,
-              "text": "lydrochlorothiazide(HCTZ"
+              "text": "Hydrochlorothiazide"
             },
             {
               "index": 2,
@@ -133893,8 +133893,8 @@
           ],
           "correct_index": 1,
           "correct_indices": null,
-          "correct_text": "lydrochlorothiazide(HCTZ",
-          "manual_reviewed": false,
+          "correct_text": "Hydrochlorothiazide",
+          "manual_reviewed": true,
           "preview_src": "./previews/c3dfe84ef556631f.png"
         },
         {
@@ -134069,7 +134069,7 @@
           "page_number": 130,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Glimepiride",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -134078,7 +134078,7 @@
             },
             {
               "index": 2,
-              "text": "ipupropen"
+              "text": "Ibupropen"
             },
             {
               "index": 3,
@@ -134092,7 +134092,7 @@
           "correct_index": 3,
           "correct_indices": null,
           "correct_text": "Glimepiride",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/93143920e5a85921.png"
         },
         {
@@ -134102,12 +134102,12 @@
           "page_number": 132,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Acetylsalicylic acid",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
               "index": 1,
-              "text": "ipupropen"
+              "text": "Ibupropen"
             },
             {
               "index": 2,
@@ -134125,7 +134125,7 @@
           "correct_index": 4,
           "correct_indices": null,
           "correct_text": "Acetylsalicylic acid",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/fac0e39d53822fd1.png"
         },
         {
@@ -134135,12 +134135,12 @@
           "page_number": 134,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "ipupropen",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
               "index": 1,
-              "text": "ipupropen"
+              "text": "Ibupropen"
             },
             {
               "index": 2,
@@ -134157,8 +134157,8 @@
           ],
           "correct_index": 1,
           "correct_indices": null,
-          "correct_text": "ipupropen",
-          "manual_reviewed": false,
+          "correct_text": "Ibupropen",
+          "manual_reviewed": true,
           "preview_src": "./previews/8983836da83696d7.png"
         },
         {
@@ -134300,12 +134300,12 @@
           "page_number": 144,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Indomethacin",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
               "index": 1,
-              "text": "Fluorobenzene"
+              "text": "Sulindac"
             },
             {
               "index": 2,
@@ -134323,7 +134323,7 @@
           "correct_index": 2,
           "correct_indices": null,
           "correct_text": "Indomethacin",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/be5fd682a9b6991d.png"
         },
         {
@@ -134333,7 +134333,7 @@
           "page_number": 146,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Fluorobenzene",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -134346,7 +134346,7 @@
             },
             {
               "index": 3,
-              "text": "Fluorobenzene"
+              "text": "Sulindac"
             },
             {
               "index": 4,
@@ -134355,8 +134355,8 @@
           ],
           "correct_index": 3,
           "correct_indices": null,
-          "correct_text": "Fluorobenzene",
-          "manual_reviewed": false,
+          "correct_text": "Sulindac",
+          "manual_reviewed": true,
           "preview_src": "./previews/866bb160a1b67dd0.png"
         },
         {
@@ -134399,7 +134399,7 @@
           "page_number": 150,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Pyrazinamide",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -134416,13 +134416,13 @@
             },
             {
               "index": 4,
-              "text": "WAZ EN FE ECAMALTE EW"
+              "text": "Fexofenadine"
             }
           ],
           "correct_index": 1,
           "correct_indices": null,
           "correct_text": "Pyrazinamide",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/4c2f5926dc643e4a.png"
         },
         {
@@ -134432,7 +134432,7 @@
           "page_number": 152,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Hydroxyzine",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -134445,7 +134445,7 @@
             },
             {
               "index": 3,
-              "text": "WAZ EN FE ECAMALTE EW"
+              "text": "Fexofenadine"
             },
             {
               "index": 4,
@@ -134455,7 +134455,7 @@
           "correct_index": 2,
           "correct_indices": null,
           "correct_text": "Hydroxyzine",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/c84ab639f74e0ab6.png"
         },
         {
@@ -134465,12 +134465,12 @@
           "page_number": 154,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Cetirizine",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
               "index": 1,
-              "text": "WAZ EN FE ECAMALTE EW"
+              "text": "Fexofenadine"
             },
             {
               "index": 2,
@@ -134488,7 +134488,7 @@
           "correct_index": 3,
           "correct_indices": null,
           "correct_text": "Cetirizine",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/9ad475c0e062e309.png"
         },
         {
@@ -134498,7 +134498,7 @@
           "page_number": 156,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "WAZ EN FE ECAMALTE EW",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -134515,13 +134515,13 @@
             },
             {
               "index": 4,
-              "text": "WAZ EN FE ECAMALTE EW"
+              "text": "Fexofenadine"
             }
           ],
           "correct_index": 4,
           "correct_indices": null,
-          "correct_text": "WAZ EN FE ECAMALTE EW",
-          "manual_reviewed": false,
+          "correct_text": "Fexofenadine",
+          "manual_reviewed": true,
           "preview_src": "./previews/b1fda190662aee8f.png"
         },
         {
@@ -134630,7 +134630,7 @@
           "page_number": 164,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Loratadine",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -134643,7 +134643,7 @@
             },
             {
               "index": 3,
-              "text": "Metioquine"
+              "text": "Mefloquine"
             },
             {
               "index": 4,
@@ -134653,7 +134653,7 @@
           "correct_index": 4,
           "correct_indices": null,
           "correct_text": "Loratadine",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/4d2bb8223bce84e2.png"
         },
         {
@@ -134663,7 +134663,7 @@
           "page_number": 166,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Pranlukast",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -134676,7 +134676,7 @@
             },
             {
               "index": 3,
-              "text": "Metioquine"
+              "text": "Mefloquine"
             },
             {
               "index": 4,
@@ -134686,7 +134686,7 @@
           "correct_index": 1,
           "correct_indices": null,
           "correct_text": "Pranlukast",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/a3f878b5f9d52827.png"
         },
         {
@@ -134696,12 +134696,12 @@
           "page_number": 168,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Metronidazole",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
               "index": 1,
-              "text": "Metioquine"
+              "text": "Mefloquine"
             },
             {
               "index": 2,
@@ -134719,7 +134719,7 @@
           "correct_index": 2,
           "correct_indices": null,
           "correct_text": "Metronidazole",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/8653e64f2c0b5e4f.png"
         },
         {
@@ -134729,7 +134729,7 @@
           "page_number": 170,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Metioquine",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -134742,7 +134742,7 @@
             },
             {
               "index": 3,
-              "text": "Metioquine"
+              "text": "Mefloquine"
             },
             {
               "index": 4,
@@ -134751,8 +134751,8 @@
           ],
           "correct_index": 3,
           "correct_indices": null,
-          "correct_text": "Metioquine",
-          "manual_reviewed": false,
+          "correct_text": "Mefloquine",
+          "manual_reviewed": true,
           "preview_src": "./previews/bce0a6baedbf7e1f.png"
         },
         {
@@ -134828,7 +134828,7 @@
           "page_number": 176,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Amoxicillin",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -134845,13 +134845,13 @@
             },
             {
               "index": 4,
-              "text": "y 89 Ciprofloxacin"
+              "text": "Ciprofloxacin"
             }
           ],
           "correct_index": 2,
           "correct_indices": null,
           "correct_text": "Amoxicillin",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/681aa8ade48f7c77.png"
         },
         {
@@ -134861,7 +134861,7 @@
           "page_number": 178,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Ofloxacin",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -134870,7 +134870,7 @@
             },
             {
               "index": 2,
-              "text": "y 89 Ciprofloxacin"
+              "text": "Ciprofloxacin"
             },
             {
               "index": 3,
@@ -134884,7 +134884,7 @@
           "correct_index": 3,
           "correct_indices": null,
           "correct_text": "Ofloxacin",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/5ce5970dc98e6e19.png"
         },
         {
@@ -134894,12 +134894,12 @@
           "page_number": 180,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Cefaclor",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
               "index": 1,
-              "text": "y 89 Ciprofloxacin"
+              "text": "Ciprofloxacin"
             },
             {
               "index": 2,
@@ -134917,7 +134917,7 @@
           "correct_index": 4,
           "correct_indices": null,
           "correct_text": "Cefaclor",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/bf2bd80a2a2347b6.png"
         },
         {
@@ -134927,12 +134927,12 @@
           "page_number": 182,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "y 89 Ciprofloxacin",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
               "index": 1,
-              "text": "y 89 Ciprofloxacin"
+              "text": "Ciprofloxacin"
             },
             {
               "index": 2,
@@ -134949,8 +134949,8 @@
           ],
           "correct_index": 1,
           "correct_indices": null,
-          "correct_text": "y 89 Ciprofloxacin",
-          "manual_reviewed": false,
+          "correct_text": "Ciprofloxacin",
+          "manual_reviewed": true,
           "preview_src": "./previews/d698778751d24e01.png"
         },
         {
@@ -135653,12 +135653,12 @@
           "page_number": 228,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "Triazolam",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
               "index": 1,
-              "text": "SSRI"
+              "text": "Sertraline"
             },
             {
               "index": 2,
@@ -135676,7 +135676,7 @@
           "correct_index": 3,
           "correct_indices": null,
           "correct_text": "Triazolam",
-          "manual_reviewed": false,
+          "manual_reviewed": true,
           "preview_src": "./previews/29fcb02070f8b83c.png"
         },
         {
@@ -135686,7 +135686,7 @@
           "page_number": 230,
           "question_kind": "multiple_choice",
           "stem": "이 약물 구조의 이름은?",
-          "answer_text": "SSRI",
+          "answer_text": null,
           "explanation_text": null,
           "choices": [
             {
@@ -135703,13 +135703,13 @@
             },
             {
               "index": 4,
-              "text": "SSRI"
+              "text": "Sertraline"
             }
           ],
           "correct_index": 4,
           "correct_indices": null,
-          "correct_text": "SSRI",
-          "manual_reviewed": false,
+          "correct_text": "Sertraline",
+          "manual_reviewed": true,
           "preview_src": "./previews/33fcd691c8ce120d.png"
         },
         {
