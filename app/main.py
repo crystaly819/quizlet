@@ -221,7 +221,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def index(request: Request) -> HTMLResponse:
         with session_scope() as session:
             rows = session.execute(
-                select(Deck, func.count(ParseIssue.id))
+                select(
+                    Deck,
+                    func.count(ParseIssue.id),
+                    func.count(func.distinct(Question.id)).filter(Question.is_approved.is_(True)),
+                )
                 .outerjoin(Question, Question.deck_id == Deck.id)
                 .outerjoin(
                     ParseIssue,
@@ -234,7 +238,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 select(func.count(ParseIssue.id)).where(ParseIssue.status == "open")
             ).scalar_one()
 
-        deck_rows = [{"deck": deck, "open_issues": open_issues} for deck, open_issues in rows]
+        deck_rows = [
+            {
+                "deck": deck,
+                "open_issues": open_issues,
+                "approved_questions": approved_questions,
+            }
+            for deck, open_issues, approved_questions in rows
+        ]
         return app.state.templates.TemplateResponse(
             request,
             "index.html",

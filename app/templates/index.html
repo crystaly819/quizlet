@@ -26,7 +26,7 @@
   {% for row in decks %}
   <article class="deck-card">
     <h2>{{ row.deck.title }}</h2>
-    <p class="deck-meta">{{ row.deck.page_count }} pages · {{ row.deck.question_count }} questions</p>
+    <p class="deck-meta">{{ row.deck.page_count }} pages · {{ row.approved_questions }} questions</p>
     <p class="deck-meta">열린 검수 {{ row.open_issues }}건</p>
     <div class="deck-actions">
       <a class="button" href="/decks/{{ row.deck.id }}/study?mode=all">전체 랜덤</a>
