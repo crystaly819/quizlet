@@ -68,9 +68,10 @@ function renderDecks(data) {
       <p class="deck-meta">${deck.page_count} pages · ${deck.question_count} questions</p>
       <p class="deck-meta">이 브라우저 기준 ${summary.seenCount}개 풀이 · 오답노트 ${summary.wrongCount}개</p>
       <div class="deck-actions">
+        <a class="button" href="./questions.html?deck=${encodeURIComponent(deck.slug)}&mode=all">문제 목록</a>
         <a class="button" href="${studyLink(deck.slug, "all")}">전체 랜덤</a>
-        <a class="button ghost" href="${studyLink(deck.slug, "unseen")}">미풀이</a>
-        <a class="button ghost" href="${studyLink(deck.slug, "wrong")}">오답노트</a>
+        <a class="button ghost" href="./questions.html?deck=${encodeURIComponent(deck.slug)}&mode=unseen">미풀이 목록</a>
+        <a class="button ghost" href="./questions.html?deck=${encodeURIComponent(deck.slug)}&mode=wrong">오답 목록</a>
       </div>
     `;
     grid.appendChild(card);
