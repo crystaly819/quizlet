@@ -16,6 +16,8 @@ if (studyRoot) {
   const params = new URLSearchParams(window.location.search);
   let deckSlug = params.get("deck") || "";
   const mode = ["all", "unseen", "wrong"].includes(params.get("mode")) ? params.get("mode") : "all";
+  const selectedQuestionKey = params.get("question");
+  const listOrder = params.get("order") === "list";
   const progressStorageKey = "quizlet-gh-progress-v1";
   const previewAutoStorageKey = "quizlet-preview-auto-visible";
 
@@ -91,6 +93,8 @@ if (studyRoot) {
   }
 
   function updateModeLinks() {
+    const listLink = document.querySelector("[data-question-list-link]");
+    listLink.href = `./questions.html?deck=${encodeURIComponent(deckSlug)}&mode=${mode}`;
     for (const link of document.querySelectorAll("[data-mode-link]")) {
       const linkMode = link.dataset.modeLink;
       link.href = deckStudyLink(deckSlug, linkMode);
@@ -297,6 +301,9 @@ if (studyRoot) {
     emptyStateEl.classList.add("hidden");
 
     currentQuestion = question;
+    if (listOrder) {
+      window.history.replaceState({}, "", `${deckStudyLink(deckSlug, mode)}&question=${encodeURIComponent(question.key)}&order=list`);
+    }
     numberEl.textContent = `${question.number}번`;
     pageEl.textContent = `p.${question.page_number}`;
     stemEl.textContent = question.stem;
@@ -329,9 +336,16 @@ if (studyRoot) {
   }
 
   function loadNextQuestion() {
-    const nextQuestion = randomQuestion(eligibleQuestions());
+    const eligible = eligibleQuestions();
+    let nextQuestion;
+    if (listOrder && currentQuestion) {
+      const currentIndex = currentDeck.questions.findIndex((question) => question.key === currentQuestion.key);
+      nextQuestion = currentDeck.questions.slice(currentIndex + 1).find((question) => eligible.includes(question));
+    } else {
+      nextQuestion = listOrder ? eligible[0] : randomQuestion(eligible);
+    }
     if (!nextQuestion) {
-      setEmptyState("현재 모드에서 더 이상 보여줄 문항이 없습니다.");
+      setEmptyState(listOrder ? "목록의 마지막 문제까지 확인했습니다. 문제 목록에서 다시 선택해 주세요." : "현재 모드에서 더 이상 보여줄 문항이 없습니다.");
       return;
     }
     renderQuestion(nextQuestion);
@@ -522,10 +536,17 @@ if (studyRoot) {
         return;
       }
       titleEl.textContent = currentDeck.title;
+      currentDeck.questions.sort((left, right) => left.page_number - right.page_number || String(left.number).localeCompare(String(right.number), "ko", { numeric: true }));
       metaEl.textContent = `${currentDeck.approved_count} approved · localStorage 기반 ${modeLabel(mode)} 모드`;
       document.title = `${currentDeck.title} | 수정 예시 문제집`;
       updateProgressSummary();
-      loadNextQuestion();
+      if (selectedQuestionKey) {
+        const selected = eligibleQuestions().find((question) => question.key === selectedQuestionKey);
+        if (selected) renderQuestion(selected);
+        else setEmptyState("선택한 문항이 없거나 현재 필터에 해당하지 않습니다. 문제 목록에서 다시 선택해 주세요.");
+      } else {
+        loadNextQuestion();
+      }
     })
     .catch((error) => {
       titleEl.textContent = "데이터 로딩 실패";
